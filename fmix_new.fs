@@ -24,12 +24,12 @@ create filename 70 allot
 0 Value fd-out
 : open-output ( addr u -- )  w/o create-file throw to fd-out ;
 
-: create_readme 
-   get_project_name filename place_str
-    
-    s" /README.md" filename append_str
-
-    filename count open-output
+: create_readme
+    get_project_name filename 0 s+ 
+    s" /README.md" s+
+   
+\     filename count open-output
+    open-output
 
     s" # " fd-out write-file drop
     get_project_name fd-out write-line drop
@@ -49,24 +49,24 @@ create filename 70 allot
 ;
 
 : create_project_file 
-   get_project_name filename place_str
+    get_project_name filename 0 s+ 
+    s" /fproject.fs" s+ 
     
-    s" /fproject.fs" filename append_str
+\     filename count open-output
+    open-output
 
-    filename count open-output
-
-    s" # " fd-out write-file drop
+    s" forth-project" fd-out write-line drop
+    s"   key-value name " fd-out write-file drop
     get_project_name fd-out write-line drop
-    s" " fd-out write-line drop
-    s" **TODO: Add description**" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" ## Installation" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" For install dependecies" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" ```forth" fd-out write-line drop
-    s"    fmix deps.get" fd-out write-line drop
-    s" ```" fd-out write-line drop
+    s"   key-value version 0.1.0" fd-out write-line drop
+    s"   key-value license COPL" fd-out write-line drop
+    s"   key-value description " fd-out write-file drop
+    get_project_name fd-out write-line drop
+    s"   key-value main " fd-out write-file drop
+    get_project_name fd-out write-file drop
+    s" .fs" fd-out write-line drop
+    s"   key-list tags gforth" fd-out write-line drop
+    s" end-forth-project" fd-out write-line drop
 
     fd-out flush-file drop
     fd-out close-file drop
