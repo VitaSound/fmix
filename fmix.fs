@@ -18,6 +18,7 @@ variable arg-param-size
 : get_param arg-param @ arg-param-size @ ;
 
 : read_args
+    next-arg drop drop \ drop -e
     next-arg arg-command-size ! arg-command !
     next-arg arg-param-size ! arg-param !
 ;
@@ -36,8 +37,7 @@ variable arg-param-size
 
     get_command s" new"      COMPARE 0= IF new      THEN
     get_command s" deps.get" COMPARE 0= IF deps.get THEN
-
 ;
 
 fmix cr bye
-\ fmix
+\ fmix cr
