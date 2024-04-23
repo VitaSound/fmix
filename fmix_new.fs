@@ -18,7 +18,7 @@ create filename 70 allot
 
 \ deps-directory create-directories создаст ./deps
 
-: type_message1 get_project_name s" New project: " type type cr ;
+: type_message1 get_project_name s" * Creating new project: " type type cr ;
 : create_project_directory get_project_name create-directories ;
 
 0 Value fd-out
@@ -48,10 +48,35 @@ create filename 70 allot
     fd-out close-file drop
 ;
 
+: create_project_file 
+   get_project_name filename place_str
+    
+    s" /fproject.fs" filename append_str
+
+    filename count open-output
+
+    s" # " fd-out write-file drop
+    get_project_name fd-out write-line drop
+    s" " fd-out write-line drop
+    s" **TODO: Add description**" fd-out write-line drop
+    s" " fd-out write-line drop
+    s" ## Installation" fd-out write-line drop
+    s" " fd-out write-line drop
+    s" For install dependecies" fd-out write-line drop
+    s" " fd-out write-line drop
+    s" ```forth" fd-out write-line drop
+    s"    fmix deps.get" fd-out write-line drop
+    s" ```" fd-out write-line drop
+
+    fd-out flush-file drop
+    fd-out close-file drop
+;
+
 : fmix.new ( name-str name-str-size )
     save_project_name    
     type_message1
     create_project_directory
     create_readme
+    create_project_file
  
 ;
