@@ -1,4 +1,3 @@
-include str.fs
 include fmix_new.fs
 
 

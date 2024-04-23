@@ -24,6 +24,9 @@ create filename 70 allot
 0 Value fd-out
 : open-output ( addr u -- )  w/o create-file throw to fd-out ;
 
+: fwrite fd-out write-file drop ;
+: fwriteln fd-out write-line drop ;
+
 : create_readme
     get_project_name filename 0 s+ 
     s" /README.md" s+
@@ -31,18 +34,18 @@ create filename 70 allot
 \     filename count open-output
     open-output
 
-    s" # " fd-out write-file drop
-    get_project_name fd-out write-line drop
-    s" " fd-out write-line drop
-    s" **TODO: Add description**" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" ## Installation" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" For install dependecies" fd-out write-line drop
-    s" " fd-out write-line drop
-    s" ```forth" fd-out write-line drop
-    s"    fmix deps.get" fd-out write-line drop
-    s" ```" fd-out write-line drop
+    s" # " fwrite
+    get_project_name fwriteln
+    s" " fwriteln
+    s" **TODO: Add description**" fwriteln
+    s" " fwriteln
+    s" ## Installation" fwriteln
+    s" " fwriteln
+    s" For install dependecies" fwriteln
+    s" " fwriteln
+    s" ```forth" fwriteln
+    s"    fmix deps.get" fwriteln
+    s" ```" fwriteln
 
     fd-out flush-file drop
     fd-out close-file drop
@@ -55,21 +58,40 @@ create filename 70 allot
 \     filename count open-output
     open-output
 
-    s" forth-project" fd-out write-line drop
-    s"   key-value name " fd-out write-file drop
-    get_project_name fd-out write-line drop
-    s"   key-value version 0.1.0" fd-out write-line drop
-    s"   key-value license COPL" fd-out write-line drop
-    s"   key-value description " fd-out write-file drop
-    get_project_name fd-out write-line drop
-    s"   key-value main " fd-out write-file drop
-    get_project_name fd-out write-file drop
-    s" .fs" fd-out write-line drop
-    s"   key-list tags gforth" fd-out write-line drop
-    s" end-forth-project" fd-out write-line drop
+    s" forth-project" fwriteln
+    s"   key-value name " fwrite
+    get_project_name fwriteln
+    s"   key-value version 0.1.0" fwriteln
+    s"   key-value license COPL" fwriteln
+    s"   key-value description " fwrite
+    get_project_name fwriteln
+    s"   key-value main " fwrite
+    get_project_name fwrite
+    s" .fs" fwriteln
+    s"   key-list tags gforth" fwriteln
+    s" end-forth-project" fwriteln
 
     fd-out flush-file drop
     fd-out close-file drop
+;
+
+: create_main_file
+    get_project_name filename 0 s+ 
+    s" /" s+
+    get_project_name s+
+    s" .fs" s+
+    open-output
+    s" / main file" fwriteln
+    fd-out flush-file drop
+    fd-out close-file drop
+;
+
+: copy_license
+    s" cp " s" PWD" getenv s+
+    s" /LICENSE ./" s+
+    get_project_name s+
+
+    system
 ;
 
 : fmix.new ( name-str name-str-size )
@@ -78,5 +100,7 @@ create filename 70 allot
     create_project_directory
     create_readme
     create_project_file
+    create_main_file
+    copy_license
  
 ;
