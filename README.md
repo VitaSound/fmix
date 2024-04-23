@@ -23,3 +23,7 @@ git clone https://github.com/UA3MQJ/fmix.git
 
     fmix new example 
 ```
+
+# Depends
+
+GForth, GIT.
