@@ -44,7 +44,7 @@ variable arg-param-size
     get_command s" new"      COMPARE 0= IF new      THEN
     get_command s" deps.get" COMPARE 0= IF deps.get THEN
 
-    get_command 0= swap 0= = IF fmix_help THEN
+    \ get_command 0= swap 0= = IF fmix_help THEN
 ;
 
 fmix cr bye
