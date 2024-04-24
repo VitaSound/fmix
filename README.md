@@ -57,17 +57,10 @@ git clone https://github.com/UA3MQJ/fmix.git
 
 # Use
 
-```
-    gforth ~/fmix/fmix.fs -e new example 
-
-    or
-
-    fmix new example 
-```
-
 create new project
 ```
-  fmix new example 
+  fmix new example
+  cd example
 ```
 get dependecies
 ```
