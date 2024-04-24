@@ -1,3 +1,5 @@
+include string.fs
+
 create dep_name 70 allot
 create git_url 255 allot
 create git_branch 70 allot
@@ -13,18 +15,18 @@ create git_command 255 allot
 
     \ git clone -b main https://github.com/UA3MQJ/ftest.git ./deps/ftest/main
 
-    \ s" git clone -b "
-    \ git_branch $@ s+
-    \ s"  " s+
-    \ git_url $@ s+
-    \ s"  " s+
-    \ s" PWD" getenv s+
-    \ s" /deps/" s+
-    \ dep_name $@ s+
-    \ s" /" s+
-    \ git_branch $@ s+
+    s" git clone -b "
+    git_branch $@ s+
+    s"  " s+
+    git_url $@ s+
+    s"  " s+
+    s" PWD" getenv s+
+    s" /deps/" s+
+    dep_name $@ s+
+    s" /" s+
+    git_branch $@ s+
 
-    s" sudo pamac -Yu git" system
+    system
 ;
 
 \ parse name and immediately drop it
