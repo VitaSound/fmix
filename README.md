@@ -70,3 +70,13 @@ get dependecies
 # Depends
 
 GForth 0.7.3, GIT.
+
+# Status
+
+- [x] Create project
+- [x] Get dependecies
+- [ ] Compiling
+- [ ] Run project
+- [ ] Test test
+- [ ] And more..
+
