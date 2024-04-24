@@ -4,5 +4,7 @@ forth-project
     key-value license COPL
     key-value description Forth build tool
     key-value main fmix.fs
-    key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch main
+    \ key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch main
+    \ key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
+    \ key-list deps ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
 end-forth-project
