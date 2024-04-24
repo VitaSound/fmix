@@ -87,8 +87,9 @@ create filename 70 allot
 ;
 
 : copy_license
-    s" cp " s" PWD" getenv s+
-    s" /LICENSE ./" s+
+    s" cp "
+    s" HOME" getenv s+
+    s" /fmix/LICENSE ./" s+
     get_project_name s+
 
     system
