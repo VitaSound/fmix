@@ -24,6 +24,16 @@ git clone https://github.com/UA3MQJ/fmix.git
     fmix new example 
 ```
 
+create new project
+```
+  fmix new example 
+```
+get dependecies
+```
+  fmix deps.get 
+```
+
+
 # Depends
 
 GForth 0.7.3, GIT.

@@ -26,7 +26,24 @@ create git_command 255 allot
     s" /" s+
     git_branch $@ s+
 
-    system
+    2dup type cr
+
+    system $? 0= if
+        s" * Clone OK" type cr
+    else
+        s" * Clone ERROR. Already cloned. Pull Update" type cr
+
+        s" cd "
+        s" PWD" getenv s+
+        s" /deps/" s+
+        dep_name $@ s+
+        s" /" s+
+        git_branch $@ s+
+        s"  ; git reset --hard ; git pull origin " s+
+        git_branch $@ s+
+        s"  --force" s+
+        system
+    then
 ;
 
 \ parse name and immediately drop it
