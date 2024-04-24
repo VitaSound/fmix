@@ -94,7 +94,8 @@ create filename 70 allot
     system
 ;
 
-: fmix.new ( name-str name-str-size )
+: fmix.new
+    get_param
     save_project_name    
     type_message1
     create_project_directory

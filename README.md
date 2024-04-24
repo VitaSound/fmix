@@ -27,3 +27,7 @@ git clone https://github.com/UA3MQJ/fmix.git
 # Depends
 
 GForth, GIT.
+
+# заметки
+
+git clone -b main https://github.com/UA3MQJ/ftest.git ./deps/ftest/main
