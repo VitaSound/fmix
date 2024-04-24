@@ -26,7 +26,7 @@ git clone https://github.com/UA3MQJ/fmix.git
 
 # Depends
 
-GForth, GIT.
+GForth 0.7.3, GIT.
 
 # заметки
 
