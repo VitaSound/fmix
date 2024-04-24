@@ -23,8 +23,8 @@ All dependencies of all projects stored to ~/fmix/deps/<dep_name>/<branch|tag>
 
 This structure allows:
 
-    to store all dependencies in one place
-    to have the ability to work with different versions of one dependency.
+* to store all dependencies in one place
+* to have the ability to work with different versions of one dependency.
 
 
 # Install
@@ -61,7 +61,3 @@ get dependecies
 # Depends
 
 GForth 0.7.3, GIT.
-
-# заметки
-
-git clone -b main https://github.com/UA3MQJ/ftest.git ./deps/ftest/main
