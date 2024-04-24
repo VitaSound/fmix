@@ -13,6 +13,7 @@ forth-project
     key-value license COPL
     key-value description Forth build tool
     key-value main fmix.fs
+    / key-value deps_path ./deps
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch main
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
@@ -26,6 +27,21 @@ This structure allows:
 * to store all dependencies in one place
 * to have the ability to work with different versions of one dependency.
 
+Using dependencies in our projects
+
+```
+include ~/fmix/deps/ftest/main/ftest.fs
+```
+
+BUT if necessary, you can change the location of the dependencies, for example, place them in the current directory
+
+```
+forth-project
+    ...
+    key-value deps_path ./deps
+    ...
+end-forth-project
+```
 
 # Install
 

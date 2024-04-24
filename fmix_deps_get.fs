@@ -5,6 +5,13 @@ create git_url 255 allot
 create git_branch 70 allot
 create git_tag 70 allot
 create git_command 255 allot
+create deps_path 255 allot
+
+: set_default_deps_path
+    s" HOME" getenv
+    s" /fmix/deps/" s+
+    deps_path $!
+;
 
 : get-dep-git-url-branch
     s" * Deps get. Name: " type
@@ -21,8 +28,7 @@ create git_command 255 allot
     s"  " s+
     git_url $@ s+
     s"  " s+
-    s" PWD" getenv s+
-    s" /deps/" s+
+    deps_path $@ s+
     dep_name $@ s+
     s" /" s+
     git_branch $@ s+
@@ -35,8 +41,7 @@ create git_command 255 allot
         s" * Clone ERROR. Already cloned. Pull Update" type cr
 
         s" cd "
-        s" PWD" getenv s+
-        s" /deps/" s+
+        deps_path $@ s+
         dep_name $@ s+
         s" /" s+
         git_branch $@ s+
@@ -62,8 +67,7 @@ create git_command 255 allot
     s"  " s+
     git_url $@ s+
     s"  " s+
-    s" PWD" getenv s+
-    s" /deps/" s+
+    deps_path $@ s+
     dep_name $@ s+
     s" /" s+
     git_tag $@ s+
@@ -76,8 +80,7 @@ create git_command 255 allot
         s" * Clone ERROR. Already cloned. Pull Update" type cr
 
         s" cd "
-        s" PWD" getenv s+
-        s" /deps/" s+
+        deps_path $@ s+
         dep_name $@ s+
         s" /" s+
         git_tag $@ s+
@@ -120,9 +123,9 @@ create git_command 255 allot
 : forth-project ( -- f )
     ;
 : key-value ( <parse-name> <parse-line> -- )
-    parse-name s" main" compare 0= if
-        s" Main file name: " type
-        parse-name type cr
+    parse-name s" deps_path" compare 0= if
+        s" * Change default deps path to: " type
+        parse-name 2dup type cr s" /" s+ deps_path $!
     else
         parse-line-drop
     then ;
@@ -138,6 +141,7 @@ create git_command 255 allot
 
 : fmix.deps.get
     s" * deps.get" type cr
+    set_default_deps_path
 
     s" PWD" getenv
     s" /fproject.fs" s+
