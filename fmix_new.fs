@@ -21,34 +21,18 @@ create filename 70 allot
 : type_message1 get_project_name s" * Creating new project: " type type cr ;
 : create_project_directory get_project_name create-directories ;
 
-0 Value fd-out
-: open-output ( addr u -- )  w/o create-file throw to fd-out ;
-
-: fwrite fd-out write-file drop ;
-: fwriteln fd-out write-line drop ;
-
 : create_readme
-    get_project_name filename 0 s+ 
+    s" cp ~/fmix/priv/README.md "
+    get_project_name s+
     s" /README.md" s+
-   
-\     filename count open-output
-    open-output
+    system
 
-    s" # " fwrite
-    get_project_name fwriteln
-    s" " fwriteln
-    s" **TODO: Add description**" fwriteln
-    s" " fwriteln
-    s" ## Installation" fwriteln
-    s" " fwriteln
-    s" For install dependecies" fwriteln
-    s" " fwriteln
-    s" ```forth" fwriteln
-    s"    fmix deps.get" fwriteln
-    s" ```" fwriteln
-
-    fd-out flush-file drop
-    fd-out close-file drop
+    s" sed -i 's/<name>/"
+    get_project_name s+
+    s" /g' " s+
+    get_project_name s+
+    s" /README.md" s+
+    system
 ;
 
 : create_project_file 
