@@ -4,7 +4,7 @@
 
 variable project-name
 variable project-name-size
-: save_project_name over over project-name-size ! project-name ! ;
+: save_project_name project-name-size ! project-name ! ;
 : get_project_name project-name @ project-name-size @ ;
 
 create filename 70 allot
@@ -21,7 +21,7 @@ create filename 70 allot
 : type_message1 get_project_name s" * Creating new project: " type type cr ;
 : create_project_directory get_project_name create-directories ;
 
-: create_readme
+: copy_readme
     s" cp ~/fmix/priv/README.md "
     get_project_name s+
     s" /README.md" s+
@@ -35,7 +35,7 @@ create filename 70 allot
     system
 ;
 
-: create_project_file 
+: copy_project_file 
     s" cp ~/fmix/priv/fproject.fs "
     get_project_name s+
     s" /fproject.fs" s+
@@ -49,7 +49,7 @@ create filename 70 allot
     system
 ;
 
-: create_main_file
+: copy_main_file
     s" cp ~/fmix/priv/main.fs "
     get_project_name s+
     s" /" s+
@@ -67,14 +67,37 @@ create filename 70 allot
     system
 ;
 
+: fmix_priv_path
+    s" HOME" getenv
+    s" /fmix/priv/" s+ ;
+
+
+: new_path
+    get_project_name ;
+
+: prepend 2swap s+ ;
+
+: copy_file ( src target -- )
+    s"  " prepend s+ s" cp " prepend
+    system
+;
+
+: copy_license2
+    fmix_priv_path s" LICENSE" s+
+    new_path s" /" s+
+    copy_file
+;
+
 : fmix.new
     get_param
     save_project_name    
-    type_message1
-    create_project_directory
-    create_readme
-    create_project_file
-    create_main_file
-    copy_license
- 
+    \ type_message1
+    \ create_project_directory
+    \ copy_readme
+    \ copy_project_file
+    \ copy_main_file
+    \ copy_license
+    copy_license2
+    \ type
+    .s
 ;
