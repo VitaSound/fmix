@@ -6,6 +6,7 @@ variable arg-param-size
 : get_command arg-command @ arg-command-size @ ;
 : get_param arg-param @ arg-param-size @ ;
 
+include fmix_utils.fs
 include fmix_new.fs
 include fmix_deps_get.fs
 
