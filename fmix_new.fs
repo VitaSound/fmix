@@ -66,14 +66,12 @@ create filename 70 allot
 ;
 
 : create_main_file
-    get_project_name filename 0 s+ 
+    s" cp ~/fmix/priv/fproject.fs "
+    get_project_name s+
     s" /" s+
     get_project_name s+
     s" .fs" s+
-    open-output
-    s" / main file" fwriteln
-    fd-out flush-file drop
-    fd-out close-file drop
+    system
 ;
 
 : copy_license
