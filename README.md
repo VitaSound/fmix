@@ -69,7 +69,7 @@ get dependecies
 
 # Depends
 
-GForth 0.7.3, GIT.
+GForth 0.7.3, git, sed, cp.
 
 # Status
 
