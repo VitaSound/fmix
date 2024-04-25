@@ -6,9 +6,9 @@ variable arg-param-size
 : get_command arg-command @ arg-command-size @ ;
 : get_param arg-param @ arg-param-size @ ;
 
-include fmix_utils.fs
-include fmix_new.fs
-include fmix_deps_get.fs
+include fmix_utils.4th
+include fmix_new.4th
+include fmix_deps_get.4th
 
 : read_args
     next-arg drop drop \ drop -e
@@ -17,9 +17,9 @@ include fmix_deps_get.fs
 ;
 
 : fmix_help
-    s" ** (fmix) fmix with no arguments must be executed in a directory with a fproject.fs file" type cr cr
+    s" ** (fmix) fmix with no arguments must be executed in a directory with a package.4th file" type cr cr
     s" Usage: fmix [task]" type cr cr
-    s" mix new PATH    - Creates a new Forth project at the given path" type cr
+    s" mix new PATH    - Creates a new Forth package at the given path" type cr
 ;
 
 : fmix ( -- )
