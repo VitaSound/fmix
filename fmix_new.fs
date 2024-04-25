@@ -52,27 +52,17 @@ create filename 70 allot
 ;
 
 : create_project_file 
-    get_project_name filename 0 s+ 
-    s" /fproject.fs" s+ 
-    
-\     filename count open-output
-    open-output
+    s" cp ~/fmix/priv/fproject.fs "
+    get_project_name s+
+    s" /fproject.fs" s+
+    system
 
-    s" forth-project" fwriteln
-    s"   key-value name " fwrite
-    get_project_name fwriteln
-    s"   key-value version 0.1.0" fwriteln
-    s"   key-value license COPL" fwriteln
-    s"   key-value description " fwrite
-    get_project_name fwriteln
-    s"   key-value main " fwrite
-    get_project_name fwrite
-    s" .fs" fwriteln
-    s"   key-list tags gforth" fwriteln
-    s" end-forth-project" fwriteln
-
-    fd-out flush-file drop
-    fd-out close-file drop
+    s" sed -i 's/<name>/"
+    get_project_name s+
+    s" /g' " s+
+    get_project_name s+
+    s" /fproject.fs" s+
+    system
 ;
 
 : create_main_file
