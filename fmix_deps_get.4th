@@ -119,8 +119,8 @@ create deps_path 255 allot
     then
 ;
 
-\ finclude project.fs handling
-: forth-project ( -- f )
+\ finclude package.4th handling
+: forth-package ( -- f )
     ;
 : key-value ( <parse-name> <parse-line> -- )
     parse-name s" deps_path" compare 0= if
@@ -135,7 +135,7 @@ create deps_path 255 allot
     else
         parse-line-drop
     then ;
-: end-forth-project ; ( -- )
+: end-forth-package ; ( -- )
 
 
 
@@ -144,6 +144,6 @@ create deps_path 255 allot
     set_default_deps_path
 
     s" PWD" getenv
-    s" /fproject.fs" s+
+    s" /package.4th" s+
     included
 ;

@@ -1,46 +1,46 @@
 # fmix
 
-FMix is a build tool that provides tasks for creating, compiling, and testing Forth projects, managing its dependencies, and more.
+FMix is a build tool that provides tasks for creating, compiling, and testing Forth packages, managing its dependencies, and more.
 
-Format of project description, as example:
+Format of package description, as example:
 
-`fproject.fs`
+`package.4th`
 
 ```
-forth-project
+forth-package
     key-value name fmix
     key-value version 0.1.0
     key-value license COPL
     key-value description Forth build tool
-    key-value main fmix.fs
+    key-value main fmix.4th
     / key-value deps_path ./deps
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch main
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
     key-list deps ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
-end-forth-project
+end-forth-package
 ```
 
-All dependencies of all projects stored to ~/fmix/deps/<dep_name>/<branch|tag>
+All dependencies of all packages stored to ~/fmix/deps/<dep_name>/<branch|tag>
 
 This structure allows:
 
 * to store all dependencies in one place
 * to have the ability to work with different versions of one dependency.
 
-Using dependencies in our projects
+Using dependencies in our packages
 
 ```
-include ~/fmix/deps/ftest/main/ftest.fs
+include ~/fmix/deps/ftest/main/ftest.4th
 ```
 
 BUT if necessary, you can change the location of the dependencies, for example, place them in the current directory
 
 ```
-forth-project
+forth-package
     ...
     key-value deps_path ./deps
     ...
-end-forth-project
+end-forth-package
 ```
 
 # Install
@@ -52,12 +52,12 @@ git clone https://github.com/UA3MQJ/fmix.git
     or
     nano ~/.zshrc
 
-    alias fmix='gforth ~/fmix/fmix.fs -e'
+    alias fmix='gforth ~/fmix/fmix.4th -e'
 ```
 
 # Use
 
-create new project
+create new package
 ```
   fmix new example
   cd example
@@ -73,10 +73,10 @@ GForth 0.7.3, GIT.
 
 # Status
 
-- [x] Create project
+- [x] Create package
 - [x] Get dependecies
 - [ ] Compiling
-- [ ] Run project
+- [ ] Run package
 - [ ] Test test
 - [ ] And more..
 
