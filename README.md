@@ -1,4 +1,6 @@
 # fmix
+[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/UA3MQJ/fmix/master/LICENSE)
+[![Ver](https://img.shields.io/badge/Ver-0.2.0-green.svg)](https://github.com/UA3MQJ/fmix/tree/0.2.0)
 
 FMix is a build tool that provides tasks for creating, compiling, and testing Forth packages, managing its dependencies, and more.
 
