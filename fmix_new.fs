@@ -66,7 +66,7 @@ create filename 70 allot
 ;
 
 : create_main_file
-    s" cp ~/fmix/priv/fproject.fs "
+    s" cp ~/fmix/priv/main.fs "
     get_project_name s+
     s" /" s+
     get_project_name s+
