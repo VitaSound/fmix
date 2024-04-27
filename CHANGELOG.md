@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
  
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [0.3.0] - 2024-04-27
+  
+Global changes after implement of get https://theforth.net packages 
+### Added
+- Get dependencies from https://theforth.net
  
+### Changed
+  
+- Changed 'deps' to 'forth-packages' for compatibility with https://theforth.net
+- Change command `fmix deps.get` to `fmix packages.get`
+- Patch of dependencies by default is `./forth-packages/` like https://theforth.net f.4th fget command
+- For change default patch to fmix patch use key `key-value dependencies_path_fmix`
  
 ## [0.2.0] - 2024-04-25
   

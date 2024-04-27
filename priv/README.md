@@ -7,5 +7,5 @@
 For install dependecies
 
 ```forth
-   fmix deps.get
+   fmix packages.get
 ```
