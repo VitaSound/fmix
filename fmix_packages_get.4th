@@ -12,8 +12,7 @@ create forth_packages_path 255 allot
 create url_path 255 allot
 
 : set_default_forth_packages_path
-    s" HOME" getenv
-    s" /fmix/forth-packages/" s+
+    s" ./forth-packages/"
     forth_packages_path $!
 ;
 
@@ -22,6 +21,10 @@ create url_path 255 allot
     package_name $@ type cr
     s" * Packages get. Version: " type
     package_version $@ type cr
+
+
+    \ change default f.4th directory
+    forth_packages_path $@ fdirectory 2!
 
     s" /api/packages/content/forth/" package_name $@ s+
     s" /" package_version $@ s+ s+
@@ -141,9 +144,12 @@ create url_path 255 allot
 : forth-package ( -- f )
     ;
 : key-value ( <parse-name> <parse-line> -- )
-    parse-name s" dependencies_path" compare 0= if
-        s" * Change default packages path to: " type
-        parse-name 2dup type cr s" /" s+ forth_packages_path $!
+    parse-name s" dependencies_path_fmix" compare 0= if
+        s" * Change default packages path to ~/fmix/forth-packages/ " type
+        
+        s" HOME" getenv
+        s" /fmix/forth-packages/" s+
+        forth_packages_path $!
     else
         parse-line-drop
     then ;
