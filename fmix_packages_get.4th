@@ -1,35 +1,50 @@
 include string.fs
+include ~/fmix/forth-packages/f/0.2.4/compat-gforth.4th
+include ~/fmix/forth-packages/f/0.2.4/f.4th
 
-create dep_name 70 allot
+create package_name 70 allot
 create git_url 255 allot
 create git_branch 70 allot
 create git_tag 70 allot
+create package_version 70 allot
 create git_command 255 allot
-create deps_path 255 allot
+create forth_packages_path 255 allot
+create url_path 255 allot
 
-: set_default_deps_path
+: set_default_forth_packages_path
     s" HOME" getenv
-    s" /fmix/deps/" s+
-    deps_path $!
+    s" /fmix/forth-packages/" s+
+    forth_packages_path $!
+;
+
+: get-dep-theforth
+    s" * Packages get. From https://theforth.net Name: " type
+    package_name $@ type cr
+    s" * Packages get. Version: " type
+    package_version $@ type cr
+
+    s" /api/packages/content/forth/" package_name $@ s+
+    s" /" package_version $@ s+ s+
+    api-get-eval
 ;
 
 : get-dep-git-url-branch
-    s" * Deps get. Name: " type
-    dep_name $@ type cr
-    s" * Deps get. URL: " type
+    s" * Packages get. from GIT. Name: " type
+    package_name $@ type cr
+    s" * Packages get. URL: " type
     git_url $@ type cr
-    s" * Deps get. Branch: " type
+    s" * Packages get. Branch: " type
     git_branch $@ type cr
 
-    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./deps/ftest/main
+    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./forth-packages/ftest/main
 
     s" git clone -b "
     git_branch $@ s+
     s"  " s+
     git_url $@ s+
     s"  " s+
-    deps_path $@ s+
-    dep_name $@ s+
+    forth_packages_path $@ s+
+    package_name $@ s+
     s" /" s+
     git_branch $@ s+
 
@@ -41,8 +56,8 @@ create deps_path 255 allot
         s" * Clone ERROR. Already cloned. Pull Update" type cr
 
         s" cd "
-        deps_path $@ s+
-        dep_name $@ s+
+        forth_packages_path $@ s+
+        package_name $@ s+
         s" /" s+
         git_branch $@ s+
         s"  ; git reset --hard ; git pull origin " s+
@@ -53,22 +68,22 @@ create deps_path 255 allot
 ;
 
 : get-dep-git-url-tag
-    s" * Deps get. Name: " type
-    dep_name $@ type cr
-    s" * Deps get. URL: " type
+    s" * Packages get. from GIT. Name: " type
+    package_name $@ type cr
+    s" * Packages get. URL: " type
     git_url $@ type cr
-    s" * Deps get. TAG: " type
+    s" * Packages get. TAG: " type
     git_tag $@ type cr
 
-    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./deps/ftest/main
+    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./forth-packages/ftest/main
 
     s" git clone -b "
     git_tag $@ s+
     s"  " s+
     git_url $@ s+
     s"  " s+
-    deps_path $@ s+
-    dep_name $@ s+
+    forth_packages_path $@ s+
+    package_name $@ s+
     s" /" s+
     git_tag $@ s+
 
@@ -80,8 +95,8 @@ create deps_path 255 allot
         s" * Clone ERROR. Already cloned. Pull Update" type cr
 
         s" cd "
-        deps_path $@ s+
-        dep_name $@ s+
+        forth_packages_path $@ s+
+        package_name $@ s+
         s" /" s+
         git_tag $@ s+
         s"  ; git reset --hard ; git pull origin " s+
@@ -90,6 +105,8 @@ create deps_path 255 allot
         system
     then
 ;
+
+
 
 \ parse name and immediately drop it
 : parse-drop ( <parse-name> -- )
@@ -100,8 +117,8 @@ create deps_path 255 allot
     parse-line 2drop ;
 
 : parse-dep 
-    parse-name dep_name $!
-    parse-name s" git" compare 0= if
+    parse-name package_name $!
+    parse-name 2dup s" git" compare 0= if
         parse-name git_url $!
         parse-name 2dup s" branch" compare 0= if
             parse-name git_branch $!
@@ -115,7 +132,8 @@ create deps_path 255 allot
             then
         then
     else
-        parse-line-drop
+        package_version $!
+        get-dep-theforth
     then
 ;
 
@@ -123,14 +141,14 @@ create deps_path 255 allot
 : forth-package ( -- f )
     ;
 : key-value ( <parse-name> <parse-line> -- )
-    parse-name s" deps_path" compare 0= if
-        s" * Change default deps path to: " type
-        parse-name 2dup type cr s" /" s+ deps_path $!
+    parse-name s" dependencies_path" compare 0= if
+        s" * Change default packages path to: " type
+        parse-name 2dup type cr s" /" s+ forth_packages_path $!
     else
         parse-line-drop
     then ;
 : key-list ( <parse-name> <parse-line> -- )
-    parse-name s" deps" compare 0= if
+    parse-name s" dependencies" compare 0= if
         parse-dep
     else
         parse-line-drop
@@ -139,9 +157,9 @@ create deps_path 255 allot
 
 
 
-: fmix.deps.get
-    s" * deps.get" type cr
-    set_default_deps_path
+: fmix.packages.get
+    s" * packages.get" type cr
+    set_default_forth_packages_path
 
     s" PWD" getenv
     s" /package.4th" s+

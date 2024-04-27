@@ -15,14 +15,17 @@ forth-package
     key-value license COPL
     key-value description Forth build tool
     key-value main fmix.4th
-    / key-value deps_path ./deps
-    key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch main
-    key-list deps ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
-    key-list deps ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
+    / key-value dependencies_path ./forth-packages
+    / packages from git
+    key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git branch main
+    key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
+    key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
+    / packages from theforth.net
+    key-list dependencies f 0.2.4
 end-forth-package
 ```
 
-All dependencies of all packages stored to ~/fmix/deps/<dep_name>/<branch|tag>
+All dependencies of all packages stored to ~/fmix/forth-packages/<dep_name>/<branch|tag>
 
 This structure allows:
 
@@ -32,7 +35,7 @@ This structure allows:
 Using dependencies in our packages
 
 ```
-include ~/fmix/deps/ftest/main/ftest.4th
+include ~/fmix/forth-packages/ftest/main/ftest.4th
 ```
 
 BUT if necessary, you can change the location of the dependencies, for example, place them in the current directory
@@ -40,7 +43,7 @@ BUT if necessary, you can change the location of the dependencies, for example, 
 ```
 forth-package
     ...
-    key-value deps_path ./deps
+    key-value dependencies_path ./forth-packages
     ...
 end-forth-package
 ```
@@ -66,7 +69,7 @@ create new package
 ```
 get dependecies
 ```
-  fmix deps.get 
+  fmix packages.get 
 ```
 
 # Depends
@@ -82,3 +85,10 @@ GForth 0.7.3, git, sed, cp.
 - [ ] Test test
 - [ ] And more..
 
+
+fget base64 1.0.0
+
+include ~/fmix/forth-packages/f/0.2.4/compat-gforth.4th
+include ~/fmix/forth-packages/f/0.2.4/f.4th
+
+fget base64 1.0.0 /api/packages/content/forth/base64/1.0.0
