@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 2024-05-03
+  
+Add tests feature
+### Added
+- Command fmix.test
+ 
 ## [0.3.0] - 2024-04-27
   
 Global changes after implement of get https://theforth.net packages 
