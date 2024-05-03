@@ -6,9 +6,11 @@ variable arg-param-size
 : get_command arg-command @ arg-command-size @ ;
 : get_param arg-param @ arg-param-size @ ;
 
+include string.fs
 include fmix_utils.4th
 include fmix_new.4th
 include fmix_packages_get.4th
+include fmix_test.4th
 
 : read_args
     next-arg drop drop \ drop -e
@@ -25,8 +27,9 @@ include fmix_packages_get.4th
 : fmix ( -- )
     read_args
 
-    get_command s" new"      COMPARE 0= IF fmix.new THEN
+    get_command s" new"          COMPARE 0= IF fmix.new          THEN
     get_command s" packages.get" COMPARE 0= IF fmix.packages.get THEN
+    get_command s" test"         COMPARE 0= IF fmix.test         THEN
 
     \ get_command 0= swap 0= = IF fmix_help THEN
 ;

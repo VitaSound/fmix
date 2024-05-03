@@ -1,4 +1,3 @@
-include string.fs
 include ~/fmix/forth-packages/f/0.2.4/compat-gforth.4th
 include ~/fmix/forth-packages/f/0.2.4/f.4th
 

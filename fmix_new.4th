@@ -44,14 +44,26 @@ variable package-name-size
         copy_file
 ;
 
-
 : copy_license
     fmix_priv_path s" LICENSE" s+
     new_path
         copy_file
 ;
 
+: copy_tests
+    s" -r " fmix_priv_path s+ s" tests" s+
+    new_path s" tests" s+
+        copy_file
+;
+
+: copy_packages
+    s" -r " fmix_priv_path s+ s" forth-packages" s+
+    new_path s" forth-packages" s+
+        copy_file
+;
+
 : fmix.new
+    cr
     get_param
     save_package_name    
     type_message1
@@ -60,4 +72,6 @@ variable package-name-size
     copy_package_file
     copy_main_file
     copy_license
+    copy_packages
+    copy_tests
 ;
