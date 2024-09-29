@@ -8,9 +8,9 @@ variable wdirid
 
 : test_file_operate
     test_get_path 2swap s+
-    \ 2dup
+    2dup
     type cr
-    \ included
+    included
 ;
 
 : test_file_filter

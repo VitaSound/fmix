@@ -5,16 +5,18 @@ variable package-name-size
 : save_package_name package-name-size ! package-name ! ;
 : get_package_name package-name @ package-name-size @ ;
 
+\ TODO not working with gforth from snap
+: get_home s" HOME" getenv ;
 
 : fmix_priv_path
-    s" HOME" getenv
+    get_home
     s" /fmix/priv/" s+ ;
 
 : new_path
     get_package_name s" /" s+ ;
 
 : type_message1 get_package_name s" * Creating new package: " type type cr ;
-: create_package_directory get_package_name create-directories ;
+: create_package_directory get_package_name fmix-create-directories ;
 
 : copy_readme
     fmix_priv_path s" README.md" s+

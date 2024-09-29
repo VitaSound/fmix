@@ -111,12 +111,12 @@ create url_path 255 allot
 
 
 \ parse name and immediately drop it
-: parse-drop ( <parse-name> -- )
+: fmix-parse-drop ( <parse-name> -- )
     parse-name 2drop ;
-: parse-line ( <parse-line> -- c-addr n )
+: fmix-parse-line ( <parse-line> -- c-addr n )
     10 parse ;
-: parse-line-drop ( <parse-line> -- )
-    parse-line 2drop ;
+: fmix-parse-line-drop ( <parse-line> -- )
+    fmix-parse-line 2drop ;
 
 : parse-dep 
     parse-name package_name $!
@@ -130,7 +130,7 @@ create url_path 255 allot
                 parse-name git_tag $!
                 get-dep-git-url-tag
             else
-                parse-line-drop
+                fmix-parse-line-drop
             then
         then
     else
@@ -150,13 +150,13 @@ create url_path 255 allot
         s" /fmix/forth-packages/" s+
         forth_packages_path $!
     else
-        parse-line-drop
+        fmix-parse-line-drop
     then ;
 : key-list ( <parse-name> <parse-line> -- )
     parse-name s" dependencies" compare 0= if
         parse-dep
     else
-        parse-line-drop
+        fmix-parse-line-drop
     then ;
 : end-forth-package ; ( -- )
 

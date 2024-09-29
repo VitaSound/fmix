@@ -78,7 +78,8 @@ Run tests
 
 # Depends
 
-GForth 0.7.3, linux, git, sed, cp.
+GForth 0.7.9, linux, git, sed, cp.
+WARNING! dont use GForth from snap
 
 # Status
 
