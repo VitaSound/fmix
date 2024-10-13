@@ -18,9 +18,16 @@ include fmix_test.4th
 ;
 
 : fmix_help
-    s" ** (fmix) fmix with no arguments must be executed in a directory with a package.4th file" type cr cr
+    s" ** (fmix) fmix v.0.3.3 with no arguments must be executed in a directory with a package.4th file" type cr cr
     s" Usage: fmix [task]" type cr cr
-    s" mix new PATH    - Creates a new Forth package at the given path" type cr
+    s" fmix new PATH     - Creates a new Forth package at the given path" type cr
+    s" fmix packages.get - Get dependency packages" type cr
+    s" fmix test         - Start project tests" type cr
+    s" fmix version      - Get fmix version" type cr
+;
+
+: fmix.version
+    s" ** (fmix) fmix v.0.3.3" type cr cr
 ;
 
 : fmix ( -- )
@@ -29,6 +36,7 @@ include fmix_test.4th
     get_command s" new"          COMPARE 0= IF fmix.new          THEN
     get_command s" packages.get" COMPARE 0= IF fmix.packages.get THEN
     get_command s" test"         COMPARE 0= IF fmix.test         THEN
+    get_command s" version"      COMPARE 0= IF fmix.version      THEN
 
     get_command = IF fmix_help THEN
 ;

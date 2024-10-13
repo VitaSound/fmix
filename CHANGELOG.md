@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.3] - 2024-10-13
+
+moved to VitaSound
+
 ## [0.3.2] - 2024-09-29
   
 Update gforth version to 0.7.9. 
