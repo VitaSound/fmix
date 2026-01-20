@@ -43,6 +43,20 @@ create test-buff 255 allot
     THEN ;
 
 : fmix.test
-    cr s" * Start Tests" type cr
-    s" PWD" getenv s" /tests" s+ test-path 2!
-    test-read-dir ;
+    fmix.param-arg 2@
+
+    0= IF
+        drop
+
+        cr s" * Start Tests" type cr
+        s" PWD" getenv s" /tests" s+ test-path 2!
+        test-read-dir
+    ELSE
+        drop
+        cr s" * Start Tests for one file: " type
+        s" PWD" getenv test-path 2!
+        fmix.param-arg 2@ test-file-operate
+    THEN 
+    
+    s" * All tests done." type cr
+    ;
