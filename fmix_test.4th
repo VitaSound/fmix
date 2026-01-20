@@ -1,55 +1,45 @@
-create test_buff 255 allot
-create test_path 255 allot
+\ fmix_test.4th
+\ Этот файл должен лежать рядом с fmix.4th
+require fmix_utils.4th
+
+2VARIABLE test-path
 variable wdirid
+create test-buff 255 allot
 
-: test_get_path
-    test_path $@
-;
+: get-test-path
+    test-path 2@ ;
 
-: test_file_operate
-    test_get_path 2swap s+
-    2dup
-    type cr
-    included
-;
+: test-file-operate
+    get-test-path fs-join
+    2dup type cr
+    included ;
 
-: test_file_filter
-    2dup
-    s" _test." search 
+: test-file-filter
+    2dup s" _test." search 
     0= invert IF
-        2DROP
+        2drop
         s" * Test file: " type
-        test_file_operate
+        test-file-operate
     ELSE
-        2DROP
-        2DROP
-    THEN
-;
+        2drop 2drop
+    THEN ;
 
-: test_read_dir
-    test_get_path open-dir
-
+: test-read-dir
+    get-test-path open-dir
     0= IF
         wdirid !
-
-        begin
-            test_buff 255 wdirid @ read-dir 
-
-            rot test_buff swap test_file_filter
-            drop
-        0= until
+        BEGIN
+            test-buff 255 wdirid @ read-dir throw
+            dup
+        WHILE
+            test-buff swap test-file-filter
+        REPEAT
+        drop wdirid @ close-dir throw
     ELSE
-        s" ERROR of read ./tests directory" type cr
-    THEN
-;
+        s" [ERROR] Cannot open ./tests directory" type cr
+    THEN ;
 
 : fmix.test
-    cr
-    s" * Start Tests" type cr
-
-    s" PWD" getenv
-    s" /tests/" s+ test_path $!
-    test_read_dir
-
-
-;
+    cr s" * Start Tests" type cr
+    s" PWD" getenv s" /tests" s+ test-path 2!
+    test-read-dir ;

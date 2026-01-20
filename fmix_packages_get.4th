@@ -1,172 +1,64 @@
-include ~/fmix/forth-packages/f/0.2.4/compat-gforth.4th
-include ~/fmix/forth-packages/f/0.2.4/f.4th
+\ fmix_packages_get.4th
+\ Координатор зависимостей
 
-create package_name 70 allot
-create git_url 255 allot
-create git_branch 70 allot
-create git_tag 70 allot
-create package_version 70 allot
-create git_command 255 allot
-create forth_packages_path 255 allot
-create url_path 255 allot
+\ --- Глобальные переменные контекста ---
+\ Они должны быть определены ДО подключения sub-модулей
+variable dep-base-path-a  variable dep-base-path-u
+variable cur-pkg-name-a   variable cur-pkg-name-u
+variable cur-pkg-ver-a    variable cur-pkg-ver-u
 
-: set_default_forth_packages_path
-    s" ./forth-packages/"
-    forth_packages_path $!
-;
+\ --- Подключение модулей ---
+require fmix_deps_git.4th
+require fmix_deps_net.4th
 
-: get-dep-theforth
-    s" * Packages get. From https://theforth.net Name: " type
-    package_name $@ type cr
-    s" * Packages get. Version: " type
-    package_version $@ type cr
+\ --- Утилиты настройки ---
 
+: set-default-dep-path
+    s" ./forth-packages" str-dup 
+    dep-base-path-u ! dep-base-path-a ! ;
 
-    \ change default f.4th directory
-    forth_packages_path $@ fdirectory 2!
+: set-cur-pkg ( addr u -- )
+    str-dup cur-pkg-name-u ! cur-pkg-name-a ! ;
 
-    s" /api/packages/content/forth/" package_name $@ s+
-    s" /" package_version $@ s+ s+
-    api-get-eval
-;
+\ --- Парсер package.4th ---
 
-: get-dep-git-url-branch
-    s" * Packages get. from GIT. Name: " type
-    package_name $@ type cr
-    s" * Packages get. URL: " type
-    git_url $@ type cr
-    s" * Packages get. Branch: " type
-    git_branch $@ type cr
+: fmix-skip-line 10 parse 2drop ;
+: forth-package ; 
+: end-forth-package ;
 
-    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./forth-packages/ftest/main
+: key-value ( -- )
+    parse-name 
+    2dup s" dependencies_path_fmix" compare 0= IF
+        2drop
+        get-home-path s" fmix/forth-packages" str-concat
+        dep-base-path-u ! dep-base-path-a !
+    ELSE
+        2drop fmix-skip-line
+    THEN ;
 
-    s" git clone -b "
-    git_branch $@ s+
-    s"  " s+
-    git_url $@ s+
-    s"  " s+
-    forth_packages_path $@ s+
-    package_name $@ s+
-    s" /" s+
-    git_branch $@ s+
-
-    2dup type cr
-
-    system $? 0= if
-        s" * Clone OK" type cr
-    else
-        s" * Clone ERROR. Already cloned. Pull Update" type cr
-
-        s" cd "
-        forth_packages_path $@ s+
-        package_name $@ s+
-        s" /" s+
-        git_branch $@ s+
-        s"  ; git reset --hard ; git pull origin " s+
-        git_branch $@ s+
-        s"  --force" s+
-        system
-    then
-;
-
-: get-dep-git-url-tag
-    s" * Packages get. from GIT. Name: " type
-    package_name $@ type cr
-    s" * Packages get. URL: " type
-    git_url $@ type cr
-    s" * Packages get. TAG: " type
-    git_tag $@ type cr
-
-    \ git clone -b main https://github.com/UA3MQJ/ftest.git ./forth-packages/ftest/main
-
-    s" git clone -b "
-    git_tag $@ s+
-    s"  " s+
-    git_url $@ s+
-    s"  " s+
-    forth_packages_path $@ s+
-    package_name $@ s+
-    s" /" s+
-    git_tag $@ s+
-
-    2dup type cr
-
-    system $? 0= if
-        s" * Clone OK" type cr
-    else
-        s" * Clone ERROR. Already cloned. Pull Update" type cr
-
-        s" cd "
-        forth_packages_path $@ s+
-        package_name $@ s+
-        s" /" s+
-        git_tag $@ s+
-        s"  ; git reset --hard ; git pull origin " s+
-        git_tag $@ s+
-        s"  --force" s+
-        system
-    then
-;
-
-
-
-\ parse name and immediately drop it
-: fmix-parse-drop ( <parse-name> -- )
-    parse-name 2drop ;
-: fmix-parse-line ( <parse-line> -- c-addr n )
-    10 parse ;
-: fmix-parse-line-drop ( <parse-line> -- )
-    fmix-parse-line 2drop ;
-
-: parse-dep 
-    parse-name package_name $!
-    parse-name 2dup s" git" compare 0= if
-        parse-name git_url $!
-        parse-name 2dup s" branch" compare 0= if
-            parse-name git_branch $!
-            get-dep-git-url-branch
-        else
-            s" tag" compare 0= if
-                parse-name git_tag $!
-                get-dep-git-url-tag
-            else
-                fmix-parse-line-drop
-            then
-        then
-    else
-        package_version $!
-        get-dep-theforth
-    then
-;
-
-\ finclude package.4th handling
-: forth-package ( -- f )
-    ;
-: key-value ( <parse-name> <parse-line> -- )
-    parse-name s" dependencies_path_fmix" compare 0= if
-        s" * Change default packages path to ~/fmix/forth-packages/ " type
-        
-        s" HOME" getenv
-        s" /fmix/forth-packages/" s+
-        forth_packages_path $!
-    else
-        fmix-parse-line-drop
-    then ;
-: key-list ( <parse-name> <parse-line> -- )
-    parse-name s" dependencies" compare 0= if
-        parse-dep
-    else
-        fmix-parse-line-drop
-    then ;
-: end-forth-package ; ( -- )
-
-
+: key-list ( -- )
+    parse-name s" dependencies" compare 0<> IF fmix-skip-line EXIT THEN
+    
+    parse-name set-cur-pkg
+    
+    parse-name 2dup s" git" compare 0= IF
+        2drop parse-git-args  \ Вызов из fmix_deps_git.4th
+    ELSE
+        process-theforth-dep  \ Вызов из fmix_deps_net.4th
+    THEN ;
 
 : fmix.packages.get
-    s" * packages.get" type cr
-    set_default_forth_packages_path
-
-    s" PWD" getenv
-    s" /package.4th" s+
-    included
+    set-default-dep-path
+    
+    s" PWD" getenv s" /" str-concat s" package.4th" str-concat
+    
+    s" * Reading: " type 2dup type cr
+    
+    2dup file-status 0<> IF
+        s" [ERROR] package.4th not found!" type cr 
+        2drop EXIT
+    THEN
+    drop
+    
+    included 
 ;

@@ -1,27 +1,73 @@
-: str_prepend 2swap s+ ;
+\ fmix_utils.4th
+\ Базовые утилиты. Исправлена логика системных вызовов.
 
-: touch_file ( filename -- )
-    s" touch " str_prepend system
+\ --- Работа со строками ---
+
+: str-concat { a1 u1 a2 u2 -- a3 u3 }
+    u1 u2 + allocate throw { mem }
+    a1 mem u1 move
+    a2 mem u1 + u2 move
+    mem u1 u2 + 
 ;
 
-: delete_file ( filename -- )
-    s" rm " str_prepend system
+: str-dup { a u -- a-new u }
+    u allocate throw { mem }
+    a mem u move
+    mem u
 ;
 
-: copy_file ( src target -- )
-    s"  " str_prepend s+ s" cp " str_prepend
-    system
+: fs-join { path-a path-u name-a name-u -- full-a full-u }
+    path-u 1 + name-u + allocate throw { mem }
+    path-a mem path-u move
+    s" /" drop mem path-u + 1 move
+    name-a mem path-u + 1 + name-u move
+    mem path-u 1 + name-u +
 ;
 
-: sed ( path from to -- )
-    s" sed -i 's/" 2rot s+ s" /" s+ str_prepend s" /g' " s+ str_prepend
-    system
+\ --- Системные утилиты ---
+
+: system-checked ( addr u -- )
+    system $? 0<> IF
+        s" [ERROR] Command failed" type cr
+        bye
+    THEN ;
+
+: get-home-path ( -- addr u )
+    s" HOME" getenv s" /" str-concat ;
+
+: ensure-dir ( path u -- )
+    2dup type cr
+    $1FF mkdir-parents drop ;
+
+\ Исправлено: порядок склейки строки для sed
+: replace-in-file { file-a file-u from-a from-u to-a to-u -- }
+    \ Строим команду: sed -i 's#FROM#TO#g' FILE
+    s" sed -i 's#" 
+    from-a from-u str-concat
+    s" #" str-concat
+    to-a to-u str-concat
+    s" #g' " str-concat
+    file-a file-u str-concat
+    
+    system-checked 
 ;
 
-\ directories
--529 constant dirs-error-exists
-: fmix-create-directories ( c-addr n -- ior )
-    $1FF mkdir-parents      \ add mask
-    dup dirs-error-exists = if   \ ignore error-exists
-        drop 0
-    then ;
+\ Исправлено: прямой порядок аргументов для cp
+: cp-file { src-a src-u dst-a dst-u -- }
+    s" cp " 
+    src-a src-u str-concat
+    s"  " str-concat
+    dst-a dst-u str-concat
+    
+    system-checked
+;
+
+\ Исправлено: прямой порядок аргументов для cp -r
+: cp-dir { src-a src-u dst-a dst-u -- }
+    s" cp -r " 
+    src-a src-u str-concat
+    s"  " str-concat
+    dst-a dst-u str-concat
+    
+    system-checked
+;
