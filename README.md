@@ -1,6 +1,6 @@
 # fmix
-[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitsSound/fmix/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.4.0-green.svg)](https://github.com/VitsSound/fmix/tree/0.4.0)
+[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
+[![Ver](https://img.shields.io/badge/Ver-0.4.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.0)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
