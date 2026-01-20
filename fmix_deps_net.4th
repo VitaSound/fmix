@@ -15,7 +15,7 @@ variable net-ver-a    variable net-ver-u
 : load-f-lib-now
     prepare-f-lib-path
     
-    s" * [System] Loading f.4th from " type f-lib-path-a @ f-lib-path-u @ type cr
+    \ s" * [System] Loading f.4th from " type f-lib-path-a @ f-lib-path-u @ type cr
 
     f-lib-path-a @ f-lib-path-u @ 
     s" compat-gforth.4th" str-concat

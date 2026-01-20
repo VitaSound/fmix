@@ -2,6 +2,7 @@
 \ FMix - Forth Build Tool
 
 require fmix_utils.4th
+require fmix_version.4th
 require fmix_new.4th
 require fmix_packages_get.4th
 require fmix_test.4th
@@ -10,22 +11,18 @@ require fmix_test.4th
 2VARIABLE param-arg
 
 : read_args
-    \ Пропускаем имя скрипта
     next-arg 2drop 
-
-    \ Читаем команду (или -e от старого алиаса)
     next-arg 
-    2dup s" -e" compare 0= IF
-        2drop next-arg \ Игнорируем -e, берем следующую
-    THEN
+    2dup s" -e" compare 0= IF 2drop next-arg THEN
     str-dup cmd-arg 2!
-
-    \ Читаем параметр (имя пакета)
     next-arg str-dup param-arg 2!
 ;
 
 : fmix.help
-    cr s" Usage: fmix <command> [args]" type cr
+    cr 
+    s" FMix v" type fmix-ver-data 2@ type
+    s"  is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies." type cr
+    s" Usage: fmix <command> [args]" type cr
     s" Commands:" type cr
     s"    new <name>       - Create new package" type cr 
     s"    packages.get     - Install dependencies" type cr
@@ -34,7 +31,8 @@ require fmix_test.4th
 ;
 
 : fmix.version
-    cr s" ** (fmix) v0.3.6" type cr cr
+    \ Используем версию, прочитанную из файла
+    cr s" ** (fmix) v" type fmix-ver-data 2@ type cr cr
 ;
 
 : run-new
@@ -54,6 +52,7 @@ require fmix_test.4th
     cmd-arg 2@ s" packages.get" COMPARE 0= IF fmix.packages.get  EXIT THEN
     cmd-arg 2@ s" test"         COMPARE 0= IF fmix.test          EXIT THEN
     cmd-arg 2@ s" version"      COMPARE 0= IF fmix.version       EXIT THEN
+    cmd-arg 2@ s" help"         COMPARE 0= IF fmix.help          EXIT THEN
     
     s" Unknown command: " type cmd-arg 2@ type cr 
     fmix.help
