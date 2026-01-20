@@ -1,45 +1,50 @@
-variable arg-command
-variable arg-command-size
-variable arg-param
-variable arg-param-size
+\ fmix.4th
+\ FMix - Forth Build Tool
 
-: get_command arg-command @ arg-command-size @ ;
-: get_param arg-param @ arg-param-size @ ;
+require fmix_utils.4th
+require fmix_version.4th
+require fmix_new.4th
+require fmix_packages_get.4th
+require fmix_test.4th
 
-include fmix_utils.4th
-include fmix_new.4th
-include fmix_packages_get.4th
-include fmix_test.4th
-
-: read_args
-    next-arg drop drop \ drop -e
-    next-arg arg-command-size ! arg-command !
-    next-arg arg-param-size ! arg-param !
-;
-
-: fmix_help
-    s" ** (fmix) fmix v.0.3.3 with no arguments must be executed in a directory with a package.4th file" type cr cr
-    s" Usage: fmix [task]" type cr cr
-    s" fmix new PATH     - Creates a new Forth package at the given path" type cr
-    s" fmix packages.get - Get dependency packages" type cr
-    s" fmix test         - Start project tests" type cr
-    s" fmix version      - Get fmix version" type cr
+: fmix.help
+    cr 
+    s" FMix v" type fmix-ver-data 2@ type
+    s"  is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies." type cr
+    s" Usage: fmix <command> [args]" type cr
+    s" Commands:" type cr
+    s"    new <name>       - Create new package" type cr 
+    s"    packages.get     - Install dependencies" type cr
+    s"    test [test_file] - Run project tests or test" type cr
+    s"    version          - Show version" type cr cr
 ;
 
 : fmix.version
-    s" ** (fmix) fmix v.0.3.3" type cr cr
+    \ Используем версию, прочитанную из файла
+    cr s" ** (fmix) v" type fmix-ver-data 2@ type cr cr
+;
+
+: fmix.newproject
+    fmix.param-arg 2@ nip 0= IF
+        cr s" Error: 'new' command requires a package name." type cr
+        EXIT
+    THEN
+    fmix.param-arg 2@ set-pkg-name fmix.new
 ;
 
 : fmix ( -- )
-    read_args
+    fmix.read_args
 
-    get_command s" new"          COMPARE 0= IF fmix.new          THEN
-    get_command s" packages.get" COMPARE 0= IF fmix.packages.get THEN
-    get_command s" test"         COMPARE 0= IF fmix.test         THEN
-    get_command s" version"      COMPARE 0= IF fmix.version      THEN
+    fmix.cmd-arg 2@ nip 0= IF fmix.help EXIT THEN
 
-    get_command = IF fmix_help THEN
+    fmix.cmd-arg 2@ s" new"          COMPARE 0= IF fmix.newproject    EXIT THEN
+    fmix.cmd-arg 2@ s" packages.get" COMPARE 0= IF fmix.packages.get  EXIT THEN
+    fmix.cmd-arg 2@ s" test"         COMPARE 0= IF fmix.test          EXIT THEN
+    fmix.cmd-arg 2@ s" version"      COMPARE 0= IF fmix.version       EXIT THEN
+    fmix.cmd-arg 2@ s" help"         COMPARE 0= IF fmix.help          EXIT THEN
+    
+    s" Unknown command: " type fmix.cmd-arg 2@ type cr 
+    fmix.help
 ;
 
-fmix cr bye
-\ fmix cr
+fmix bye

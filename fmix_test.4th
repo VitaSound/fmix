@@ -1,55 +1,91 @@
-create test_buff 255 allot
-create test_path 255 allot
+\ fmix_test.4th
+\ Этот файл должен лежать рядом с fmix.4th
+require fmix_utils.4th
+require ~/fmix/forth-packages/ttester/1.1.0/ttester.4th
+
+2VARIABLE test-path
 variable wdirid
+create test-buff 255 allot
+VARIABLE fmix.ERRORS 0 fmix.ERRORS !
+VARIABLE fmix.ERROR 0 fmix.ERROR !
 
-: test_get_path
-    test_path $@
-;
-
-: test_file_operate
-    test_get_path 2swap s+
-    2dup
+: fail-fast-error ( addr u -- )
+    s" ERROR" type cr
     type cr
-    included
-;
+    SOURCE TYPE CR
 
-: test_file_filter
-    2dup
-    s" _test." search 
-    0= invert IF
-        2DROP
-        s" * Test file: " type
-        test_file_operate
-    ELSE
-        2DROP
-        2DROP
+    1 fmix.ERRORS +!
+    1 fmix.ERROR !
+    ;
+
+' fail-fast-error ERROR-XT !
+
+
+: get-test-path
+    test-path 2@ ;
+
+: test-file-operate 
+    get-test-path 2swap fmix.fs-join 
+    2dup type
+    s"  - " type
+
+    0 fmix.ERROR !
+
+    included 
+
+    fmix.ERROR @ 0= IF
+        s" OK" type cr
     THEN
 ;
 
-: test_read_dir
-    test_get_path open-dir
+: test-file-filter
+
+    2dup s" _test." search 
+    IF
+        2drop
+        s" * Test file: " type
+        test-file-operate
+    ELSE
+        2drop 2drop
+    THEN ;
+
+: test-read-dir
+    get-test-path open-dir
 
     0= IF
         wdirid !
-
-        begin
-            test_buff 255 wdirid @ read-dir 
-
-            rot test_buff swap test_file_filter
-            drop
-        0= until
+        BEGIN
+            test-buff 255 wdirid @ read-dir throw
+        WHILE
+            test-buff swap
+            test-file-filter
+        REPEAT
+        wdirid @ close-dir throw
     ELSE
-        s" ERROR of read ./tests directory" type cr
-    THEN
-;
+        s" [ERROR] Cannot open ./tests directory" type cr
+    THEN ;
 
 : fmix.test
-    cr
-    s" * Start Tests" type cr
+    fmix.param-arg 2@
 
-    s" PWD" getenv
-    s" /tests/" s+ test_path $!
-    test_read_dir
+    0= IF
+        drop
 
+        cr s" * Start Tests" type cr
+        s" PWD" getenv s" /tests" s+ test-path 2!
+        test-read-dir
+    ELSE
+        drop
+        cr s" * Start Tests for one file: " type
+        s" PWD" getenv test-path 2!
+        fmix.param-arg 2@ test-file-operate
+    THEN 
+    
+    fmix.ERRORS @ 0= IF
+        cr s" * All tests passed successfully." type cr
+    ELSE
+        cr s" * Some tests failed. Total errors: " type
+        fmix.ERRORS @ . cr
+    THEN
 
-;
+    ;

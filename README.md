@@ -1,8 +1,20 @@
 # fmix
-[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/UA3MQJ/fmix/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.3.3-green.svg)](https://github.com/UA3MQJ/fmix/tree/0.3.3)
+[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitsSound/fmix/master/LICENSE)
+[![Ver](https://img.shields.io/badge/Ver-0.4.0-green.svg)](https://github.com/VitsSound/fmix/tree/0.4.0)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
+
+```bash
+$ fmix
+
+FMix v0.4.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+Usage: fmix <command> [args]
+Commands:
+   new <name>       - Create new package
+   packages.get     - Install dependencies
+   test [test_file] - Run project tests or test
+   version          - Show version
+```
 
 Format of package description, as example:
 
