@@ -23,7 +23,7 @@ MARKER discard-parser-words
     parse-name 
     s" version" compare 0= IF
         \ Если ключ "version", сохраняем значение
-        parse-name str-dup fmix-ver-data 2!
+        parse-name fmix.str-dup fmix-ver-data 2!
     ELSE
         \ Иначе пропускаем строку
         0 parse 2drop
@@ -31,7 +31,7 @@ MARKER discard-parser-words
 
 : load-self-version
     \ Читаем ~/fmix/package.4th
-    get-home-path s" fmix/package.4th" str-concat
+    get-home-path s" fmix/package.4th" fmix.str-concat
     
     2dup file-status nip 0= IF
         included

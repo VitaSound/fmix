@@ -9,14 +9,16 @@ create test-buff 255 allot
 : get-test-path
     test-path 2@ ;
 
-: test-file-operate
-    get-test-path fs-join
+: test-file-operate 
+    get-test-path 2swap fmix.fs-join 
     2dup type cr
-    included ;
+    included 
+    ;
 
 : test-file-filter
+
     2dup s" _test." search 
-    0= invert IF
+    IF
         2drop
         s" * Test file: " type
         test-file-operate
@@ -26,15 +28,16 @@ create test-buff 255 allot
 
 : test-read-dir
     get-test-path open-dir
+
     0= IF
         wdirid !
         BEGIN
             test-buff 255 wdirid @ read-dir throw
-            dup
         WHILE
-            test-buff swap test-file-filter
+            test-buff swap
+            test-file-filter
         REPEAT
-        drop wdirid @ close-dir throw
+        wdirid @ close-dir throw
     ELSE
         s" [ERROR] Cannot open ./tests directory" type cr
     THEN ;

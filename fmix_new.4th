@@ -4,17 +4,17 @@
 2VARIABLE pkg-name-data
 
 : set-pkg-name ( addr u -- )
-    str-dup pkg-name-data 2! ;
+    fmix.str-dup pkg-name-data 2! ;
 
 : get-pkg-name ( -- addr u )
     pkg-name-data 2@ ;
 
 : get-priv-path ( -- addr u )
-    get-home-path s" fmix/priv/" str-concat ;
+    get-home-path s" fmix/priv/" fmix.str-concat ;
 
 : get-target-path ( -- addr u )
     \ Используем "." для текущей директории
-    s" ." s" /" str-concat get-pkg-name str-concat ;
+    s" ." s" /" fmix.str-concat get-pkg-name fmix.str-concat ;
 
 \ --- Операции ---
 
@@ -22,10 +22,10 @@
     name-a name-u s"   > Copying file: " type type cr
     
     \ Source: priv/name
-    get-priv-path name-a name-u str-concat { src-a src-u }
+    get-priv-path name-a name-u fmix.str-concat { src-a src-u }
     
     \ Dest: target/name
-    get-target-path name-a name-u fs-join { dst-a dst-u }
+    get-target-path name-a name-u fmix.fs-join { dst-a dst-u }
     
     src-a src-u dst-a dst-u cp-file
 ;
@@ -34,10 +34,10 @@
     name-a name-u s"   > Copying dir:  " type type cr
     
     \ Source
-    get-priv-path name-a name-u str-concat { src-a src-u }
+    get-priv-path name-a name-u fmix.str-concat { src-a src-u }
     
     \ Dest (cp -r требует папку назначения, внутрь которой копируем)
-    get-target-path s" /" str-concat { dst-a dst-u }
+    get-target-path s" /" fmix.str-concat { dst-a dst-u }
     
     src-a src-u dst-a dst-u cp-dir
 ;
@@ -46,12 +46,12 @@
     s"   > Copying main.4th..." type cr
     
     \ Source: main.4th
-    get-priv-path s" main.4th" str-concat { src-a src-u }
+    get-priv-path s" main.4th" fmix.str-concat { src-a src-u }
     
     \ Dest: target/<pkgname>.4th
     get-target-path
-    get-pkg-name s" .4th" str-concat
-    fs-join { dst-a dst-u }
+    get-pkg-name s" .4th" fmix.str-concat
+    fmix.fs-join { dst-a dst-u }
     
     src-a src-u dst-a dst-u cp-file
 ;
@@ -70,15 +70,15 @@
     s" tests"          install-dir
     s" forth-packages" install-dir
 
-    \ --- Шаблоны (Исправлен порядок аргументов fs-join) ---
+    \ --- Шаблоны (Исправлен порядок аргументов fmix.fs-join) ---
     
-    \ Было: s" package.4th" get-target-path fs-join (ОШИБКА)
-    \ Стало: get-target-path s" package.4th" fs-join (OK: папка + файл)
+    \ Было: s" package.4th" get-target-path fmix.fs-join (ОШИБКА)
+    \ Стало: get-target-path s" package.4th" fmix.fs-join (OK: папка + файл)
     
-    get-target-path s" package.4th" fs-join 
+    get-target-path s" package.4th" fmix.fs-join 
     s" <name>" get-pkg-name replace-in-file
 
-    get-target-path s" README.md"   fs-join
+    get-target-path s" README.md"   fmix.fs-join
     s" <name>" get-pkg-name replace-in-file
 
     s" * Done." type cr 

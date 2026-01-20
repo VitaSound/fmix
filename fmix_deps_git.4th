@@ -11,10 +11,10 @@ variable git-path-a       variable git-path-u
 : git-calc-path ( -- )
     dep-base-path-a @ dep-base-path-u @
     cur-pkg-name-a @ cur-pkg-name-u @
-    fs-join
+    fmix.fs-join
     
     git-ref-a @ git-ref-u @
-    fs-join
+    fmix.fs-join
     
     git-path-u ! git-path-a ! 
 ;
@@ -25,11 +25,11 @@ variable git-path-a       variable git-path-u
     git-path-a @ git-path-u @ file-status nip 0= ;
 
 : is-git-repo? ( -- f )
-    git-path-a @ git-path-u @ s" /.git" str-concat
+    git-path-a @ git-path-u @ s" /.git" fmix.str-concat
     file-status nip 0= ;
 
 : remove-target-dir ( -- )
-    s" rm -rf " git-path-a @ git-path-u @ str-concat system-checked ;
+    s" rm -rf " git-path-a @ git-path-u @ fmix.str-concat system-checked ;
 
 \ --- Git команды ---
 
@@ -37,24 +37,24 @@ variable git-path-a       variable git-path-u
     git-type-a @ git-type-u @ s" branch" compare 0= ;
 
 : git-pull-branch ( -- )
-    s" git -C " git-path-a @ git-path-u @ str-concat
-    s"  checkout " str-concat 
-    git-ref-a @ git-ref-u @ str-concat
-    s"  ; git -C " str-concat
-    git-path-a @ git-path-u @ str-concat
-    s"  pull origin " str-concat
-    git-ref-a @ git-ref-u @ str-concat
-    s"  --force" str-concat
+    s" git -C " git-path-a @ git-path-u @ fmix.str-concat
+    s"  checkout " fmix.str-concat 
+    git-ref-a @ git-ref-u @ fmix.str-concat
+    s"  ; git -C " fmix.str-concat
+    git-path-a @ git-path-u @ fmix.str-concat
+    s"  pull origin " fmix.str-concat
+    git-ref-a @ git-ref-u @ fmix.str-concat
+    s"  --force" fmix.str-concat
     system-checked ;
 
 : git-pull-tag ( -- )
-    s" git -C " git-path-a @ git-path-u @ str-concat
-    s"  fetch origin --tags --force" str-concat
+    s" git -C " git-path-a @ git-path-u @ fmix.str-concat
+    s"  fetch origin --tags --force" fmix.str-concat
     
-    s"  ; git -C " str-concat
-    git-path-a @ git-path-u @ str-concat
-    s"  -c advice.detachedHead=false checkout --force " str-concat
-    git-ref-a @ git-ref-u @ str-concat
+    s"  ; git -C " fmix.str-concat
+    git-path-a @ git-path-u @ fmix.str-concat
+    s"  -c advice.detachedHead=false checkout --force " fmix.str-concat
+    git-ref-a @ git-ref-u @ fmix.str-concat
     system-checked ;
 
 : git-update-logic ( -- )
@@ -62,11 +62,11 @@ variable git-path-a       variable git-path-u
 
 : git-clone ( -- )
     s" git -c advice.detachedHead=false clone -b " 
-    git-ref-a @ git-ref-u @ str-concat
-    s"  " str-concat
-    git-url-a @ git-url-u @ str-concat
-    s"  " str-concat
-    git-path-a @ git-path-u @ str-concat
+    git-ref-a @ git-ref-u @ fmix.str-concat
+    s"  " fmix.str-concat
+    git-url-a @ git-url-u @ fmix.str-concat
+    s"  " fmix.str-concat
+    git-path-a @ git-path-u @ fmix.str-concat
     system ; \ system ничего не возвращает на стек!
 
 \ --- Основной процесс ---
@@ -101,7 +101,7 @@ variable git-path-a       variable git-path-u
 ;
 
 : parse-git-args ( -- )
-    parse-name str-dup git-url-u ! git-url-a !
-    parse-name str-dup git-type-u ! git-type-a !
-    parse-name str-dup git-ref-u ! git-ref-a !
+    parse-name fmix.str-dup git-url-u ! git-url-a !
+    parse-name fmix.str-dup git-type-u ! git-type-a !
+    parse-name fmix.str-dup git-ref-u ! git-ref-a !
     process-git-dep ;

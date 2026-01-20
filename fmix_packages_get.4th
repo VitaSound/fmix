@@ -14,11 +14,11 @@ require fmix_deps_net.4th
 \ --- Утилиты настройки ---
 
 : set-default-dep-path
-    s" ./forth-packages" str-dup 
+    s" ./forth-packages" fmix.str-dup 
     dep-base-path-u ! dep-base-path-a ! ;
 
 : set-cur-pkg ( addr u -- )
-    str-dup cur-pkg-name-u ! cur-pkg-name-a ! ;
+    fmix.str-dup cur-pkg-name-u ! cur-pkg-name-a ! ;
 
 \ --- Парсер package.4th ---
 
@@ -30,7 +30,7 @@ require fmix_deps_net.4th
     parse-name 
     2dup s" dependencies_path_fmix" compare 0= IF
         2drop
-        get-home-path s" fmix/forth-packages" str-concat
+        get-home-path s" fmix/forth-packages" fmix.str-concat
         dep-base-path-u ! dep-base-path-a !
     ELSE
         2drop fmix-skip-line
@@ -50,7 +50,7 @@ require fmix_deps_net.4th
 : fmix.packages.get
     set-default-dep-path
     
-    s" PWD" getenv s" /" str-concat s" package.4th" str-concat
+    s" PWD" getenv s" /" fmix.str-concat s" package.4th" fmix.str-concat
     
     s" * Reading: " type 2dup type cr
     
