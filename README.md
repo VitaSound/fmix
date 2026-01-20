@@ -4,6 +4,18 @@
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
+```bash
+$ fmix
+
+FMix v0.4.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+Usage: fmix <command> [args]
+Commands:
+   new <name>       - Create new package
+   packages.get     - Install dependencies
+   test [test_file] - Run project tests or test
+   version          - Show version
+```
+
 Format of package description, as example:
 
 `package.4th`
