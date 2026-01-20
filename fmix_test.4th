@@ -1,19 +1,42 @@
 \ fmix_test.4th
 \ Этот файл должен лежать рядом с fmix.4th
 require fmix_utils.4th
+require ~/fmix/forth-packages/ttester/1.1.0/ttester.4th
 
 2VARIABLE test-path
 variable wdirid
 create test-buff 255 allot
+VARIABLE fmix.ERRORS 0 fmix.ERRORS !
+VARIABLE fmix.ERROR 0 fmix.ERROR !
+
+: fail-fast-error ( addr u -- )
+    s" ERROR" type cr
+    type cr
+    SOURCE TYPE CR
+
+    1 fmix.ERRORS +!
+    1 fmix.ERROR !
+    ;
+
+' fail-fast-error ERROR-XT !
+
 
 : get-test-path
     test-path 2@ ;
 
 : test-file-operate 
     get-test-path 2swap fmix.fs-join 
-    2dup type cr
+    2dup type
+    s"  - " type
+
+    0 fmix.ERROR !
+
     included 
-    ;
+
+    fmix.ERROR @ 0= IF
+        s" OK" type cr
+    THEN
+;
 
 : test-file-filter
 
@@ -58,5 +81,11 @@ create test-buff 255 allot
         fmix.param-arg 2@ test-file-operate
     THEN 
     
-    s" * All tests done." type cr
+    fmix.ERRORS @ 0= IF
+        cr s" * All tests passed successfully." type cr
+    ELSE
+        cr s" * Some tests failed. Total errors: " type
+        fmix.ERRORS @ . cr
+    THEN
+
     ;
