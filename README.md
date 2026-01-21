@@ -20,7 +20,7 @@ Format of package description, as example:
 
 `package.4th`
 
-```
+```forth
 forth-package
     key-value name fmix
     key-value version 0.1.0
@@ -39,16 +39,11 @@ forth-package
 end-forth-package
 ```
 
-By default, packages stored to `./forth-packages`
+Packages stored to `./forth-packages`
 
+```forth
+require ./forth-packages/ftest/main/ftest.4th
 ```
-include ./forth-packages/ftest/main/ftest.4th
-```
-
-
-IF exist key `key-value dependencies_path_fmix` then dependencies of all packages stored to ~/fmix/forth-packages/<dep_name>/<branch|tag>
-
-
 This structure allows:
 
 * to store all dependencies in one place
@@ -56,14 +51,14 @@ This structure allows:
 
 Using dependencies in our packages
 
-```
-include ~/fmix/forth-packages/ftest/main/ftest.4th
+```forth
+require ~/fmix/forth-packages/ftest/main/ftest.4th
 ```
 
 # Install
 
-```
-git clone https://github.com/UA3MQJ/fmix.git
+```bash
+git clone https://github.com/VitaSound/fmix.git
 
     nano ~/.bashrc
     or
@@ -75,16 +70,16 @@ git clone https://github.com/UA3MQJ/fmix.git
 # Use
 
 create new package
-```
+```bash
   fmix new example
   cd example
 ```
 get dependecies packages
-```
+```bash
   fmix packages.get 
 ```
 Run tests
-```
+```bash
   fmix test
 ```
 
