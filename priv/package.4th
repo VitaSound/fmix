@@ -4,10 +4,12 @@ forth-package
     key-value license COPL
     key-value description <name>
     key-value main <name>.4th
-    \ dependencies via git
+    \ packages from git
+    \ key-list dependencies <package_name> git <http-url> [branch|tag] <name>
     \ key-list dependencies ftest git https://github.com/VitaSound/ftest.git tag 0.1.0
     \ key-list dependencies ftest git https://github.com/VitaSound/ftest.git branch main
-    \ dependencies via TheForth.net
+    \ packages from theforth.net
+    \ key-list dependencies <package_name> <version>
     \ key-list dependencies base64 1.0.0
     \ key-list dependencies f 0.2.4
     \ key-list dependencies ttester 1.1.0

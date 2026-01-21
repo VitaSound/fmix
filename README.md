@@ -27,14 +27,14 @@ forth-package
     key-value license COPL
     key-value description Forth build tool
     key-value main fmix.4th
-    / key-value dependencies_path_fmix
-    / packages from git
-    / key-list dependencies <package_name> git <http-url> [branch|tag] <name>
+    \ key-value dependencies_path_fmix
+    \ packages from git
+    \ key-list dependencies <package_name> git <http-url> [branch|tag] <name>
     key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git branch main
     key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git branch special_branch
     key-list dependencies ftest git https://github.com/UA3MQJ/ftest.git tag 0.1.0
-    / packages from theforth.net
-    / key-list dependencies <package_name> <version>
+    \ packages from theforth.net
+    \ key-list dependencies <package_name> <version>
     key-list dependencies f 0.2.4
 end-forth-package
 ```
