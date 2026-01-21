@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.4.0] - 2026-01-21
+
+Global refactory with helps by Google AI Gemini and QWen.code.
+
+### Added
+- refactory all functions: new, geps get, tests
+- Command fmix test for all tests and one file with detect errors
+- some changes when git update depends
+- add utilities
+- add tests for utilities and some logic
+- read version from package and show help with start without parameters
+
+
 ## [0.3.4] - 2025-07-02
 
 change example dependencies to git
