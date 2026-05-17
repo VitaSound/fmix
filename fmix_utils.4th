@@ -105,10 +105,11 @@
     dup 0= IF 2drop s" (empty)" s" path" fmix.validation-error-value THEN
     2dup fmix.path-ok? 0= IF s" path" fmix.validation-error-value THEN ;
 
-: fmix.validate-sed-text { addr u -- addr u }
+: fmix.validate-sed-text ( addr u -- addr u )
+    2dup { addr u }
     true u 0 ?do
         addr i + c@ fmix.sed-text-char-ok? 0= IF
-            s" sed replacement text" fmix.validation-error-value
+            addr u s" sed replacement text" fmix.validation-error-value
         THEN
     loop ;
 
@@ -143,7 +144,7 @@
 \ заменить в файле вхождения строки FROM на TO
 : replace-in-file { file-a file-u from-a from-u to-a to-u -- }
     file-a file-u fmix.validate-path drop drop
-    from-a from-u fmix.validate-sed-text drop drop
+    \ from-a is the fixed template marker <name>, not user input
     to-a to-u fmix.validate-sed-text drop drop
     \ Строим команду: sed -i 's#FROM#TO#g' FILE
     s" sed -i 's#" 

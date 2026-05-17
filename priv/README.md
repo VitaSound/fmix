@@ -1,11 +1,21 @@
 # <name>
 
-**TODO: Add description**
+Forth package created with [FMix](https://github.com/VitaSound/fmix).
 
-## Installation
+## Dependencies
 
-For install dependecies
+```bash
+fmix packages.get
+```
+
+## Usage
 
 ```forth
-   fmix packages.get
+require ./<name>.4th
+```
+
+## Tests
+
+```bash
+fmix test
 ```

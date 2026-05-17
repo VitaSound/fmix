@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- Replace the `TODO: Add description` placeholder in the new-project `README.md` template with a minimal starter guide.
 - Resolve FMix internal files from `FMIX_HOME`, with `$HOME/fmix` as fallback.
 - Resolve the current project directory with `get-dir` instead of the `PWD` environment variable.
 - Keep project `package.4th` and dependencies in the directory where `fmix` is started.
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Document `FMIX_HOME` setup and project-local `./forth-packages` usage in README.
 
 ### Fixed
+- Fix `fmix new` leaving `<name>` unsubstituted in `README.md` and `package.4th` because shell validation rejected the template marker in `sed`.
 - Reject shell-metacharacters in package names, versions, paths, git refs, and URLs before running `cp`, `sed`, or `git` commands.
 - Make `fmix test` return a non-zero exit code when tests fail.
 - Fix failing sample tests and suppress duplicate utility definitions during test runs.
