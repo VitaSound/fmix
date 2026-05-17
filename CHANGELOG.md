@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ### Added
-- GitHub Actions CI: install GForth on Ubuntu and run `gforth fmix.4th -e version` and `gforth fmix.4th -e test`.
+- GitHub Actions CI: build and install GForth 0.7.9 from source, then run `gforth fmix.4th -e version` and `gforth fmix.4th -e test`.
 
 ### Changed
 - Replace the `TODO: Add description` placeholder in the new-project `README.md` template with a minimal starter guide.

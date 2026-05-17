@@ -14,8 +14,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install GForth
-        run: sudo apt-get update && sudo apt-get install -y gforth
+      - name: Cache GForth 0.7.9
+        id: cache-gforth
+        uses: actions/cache@v4
+        with:
+          path: ~/opt/gforth-0.7.9
+          key: gforth-0.7.9-${{ runner.os }}-v1
+
+      - name: Build and install GForth 0.7.9
+        run: bash .github/scripts/build-gforth-0.7.9.sh
+
+      - name: Verify GForth version
+        run: gforth --version 2>&1 | grep -F '0.7.9'
 
       - name: fmix version
         run: gforth fmix.4th -e version
