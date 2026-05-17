@@ -20,7 +20,7 @@ variable net-ver-a    variable net-ver-u
     f-lib-path-a @ f-lib-path-u @ 
     s" compat-gforth.4th" fmix.fs-join
     2dup file-status 0<> IF
-        s" [ERROR] compat-gforth.4th not found." type cr bye
+        s" [ERROR] compat-gforth.4th not found." type cr fmix.exit
     THEN
     drop included
 

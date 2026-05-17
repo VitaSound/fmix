@@ -1,13 +1,13 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.4.2-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.2)
+[![Ver](https://img.shields.io/badge/Ver-0.4.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.3)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.4.2 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.4.3 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
    new <name>       - Create new package
@@ -80,8 +80,15 @@ git clone https://github.com/VitaSound/fmix.git
     nano ~/.zshrc
 
     export FMIX_HOME="$HOME/fmix"
-    alias fmix='gforth "$FMIX_HOME/fmix.4th" -e'
+    fmix() {
+        gforth "$FMIX_HOME/fmix.4th" -e "$@"
+        stty sane 2>/dev/null
+    }
 ```
+
+Prefer the `fmix()` function over a plain `alias`: after GForth exits, `stty sane`
+restores the terminal so the shell does not print garbage such as `[?2004l` or
+`0c0c` on the next prompt (often seen on WSL or Windows terminals).
 
 `FMIX_HOME` points to the installed FMix directory. Commands such as
 `packages.get` and `test` operate on the current project directory where

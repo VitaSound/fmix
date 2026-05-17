@@ -35,10 +35,19 @@
         addr i + c@ xt execute 0= IF false unloop THEN
     loop ;
 
+\ GForth may leave the TTY in raw/bracketed-paste mode; the shell then prints
+\ garbage such as [?2004l or 0c0c on the next prompt (common on WSL/Windows).
+: fmix.restore-terminal ( -- )
+    s" stty sane 2>/dev/null" system drop ;
+
+: fmix.exit ( -- )
+    fmix.restore-terminal
+    1 (bye) ;
+
 : fmix.validation-error-value { value-a value-u label-a label-u -- }
     cr s" [ERROR] Invalid " label-a label-u type type
     s" : " type value-a value-u type cr
-    1 (bye) ;
+    fmix.exit ;
 
 : fmix.pkg-char-ok? { c -- f }
     c [char] _ = IF true EXIT THEN
@@ -121,7 +130,7 @@
     $? 0<> IF     \ $? — системное слово, возвращает код возврата последней команды
                   \ если код ≠ 0 (ошибка) → заходим в тело IF
         s" [ERROR] Command failed" type cr
-        1 (bye)   \ немедленно завершаем интерпретатор с кодом ошибки
+        fmix.exit
     THEN ;
 
 : get-home-path ( -- addr u )

@@ -101,7 +101,7 @@ VARIABLE fmix.ERROR 0 fmix.ERROR !
     ELSE
         cr s" * Some tests failed. Total errors: " type
         fmix.ERRORS @ . cr
-        1 (bye)
+        fmix.exit
     THEN
 
     ;
