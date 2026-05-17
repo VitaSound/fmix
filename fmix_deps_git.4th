@@ -107,7 +107,12 @@ variable git-parent-a     variable git-parent-u
 ;
 
 : parse-git-args ( -- )
-    parse-name fmix.str-dup git-url-u ! git-url-a !
-    parse-name fmix.str-dup git-type-u ! git-type-a !
-    parse-name fmix.str-dup git-ref-u ! git-ref-a !
+    parse-name fmix.validate-git-url fmix.str-dup git-url-u ! git-url-a !
+    parse-name 2dup
+    2dup s" branch" compare 0= >r
+    2dup s" tag" compare 0= r> or 0= IF
+        2drop s" (expected branch or tag)" s" git type" fmix.validation-error-value
+    THEN
+    fmix.str-dup git-type-u ! git-type-a !
+    parse-name fmix.validate-git-ref fmix.str-dup git-ref-u ! git-ref-a !
     process-git-dep ;

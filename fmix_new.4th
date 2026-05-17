@@ -4,6 +4,7 @@
 2VARIABLE pkg-name-data
 
 : set-pkg-name ( addr u -- )
+    fmix.validate-package-name
     fmix.str-dup pkg-name-data 2! ;
 
 : get-pkg-name ( -- addr u )

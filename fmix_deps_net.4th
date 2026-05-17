@@ -35,6 +35,7 @@ load-f-lib-now
 
 : process-theforth-dep ( version u -- )
     \ 1. СРАЗУ сохраняем версию в память и убираем со стека
+    fmix.validate-version
     fmix.str-dup net-ver-u ! net-ver-a !
 
     s" * [NET] " type 

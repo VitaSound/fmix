@@ -40,6 +40,22 @@ end-forth-package
 
 Packages stored to `./forth-packages`
 
+### Allowed characters in `package.4th`
+
+FMix validates names, versions, paths, git refs, and URLs before running
+`cp`, `sed`, or `git`. This is a simple whitelist (not full shell quoting).
+
+| Field | Allowed |
+|-------|---------|
+| Package name, version | `a-z`, `A-Z`, `0-9`, `_`, `.`, `-` |
+| Path (internal) | same + `/`; `..` is rejected |
+| Git URL | name chars + `:/=?%@` |
+| Git ref (`branch` / `tag`) | path rules |
+| Git type | only `branch` or `tag` |
+
+Spaces, semicolons, `$`, backticks, pipes, and other shell metacharacters
+are rejected with `[ERROR] Invalid ...` and exit code `1`.
+
 ```forth
 require ./forth-packages/ftest/main/ftest.4th
 ```

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Document `FMIX_HOME` setup and project-local `./forth-packages` usage in README.
 
 ### Fixed
+- Reject shell-metacharacters in package names, versions, paths, git refs, and URLs before running `cp`, `sed`, or `git` commands.
 - Make `fmix test` return a non-zero exit code when tests fail.
 - Fix failing sample tests and suppress duplicate utility definitions during test runs.
 - Make failed system commands exit GForth with exit code `1` instead of `0`.

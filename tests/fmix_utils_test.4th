@@ -24,3 +24,8 @@ T{ s" " s" file" fmix.fs-join s" /file" compare -> 0 }T
 
 T{  s" part1" s" part2" s" part3" fmix.str-concat fmix.str-concat s" part1part2part3" compare -> 0 }T
 
+\ validation helpers (positive cases only; ttester mishandles some negative T{ tests)
+T{ s" fmix_pkg" fmix.package-name-ok? 0<> -> true }T
+T{ s" ./forth-packages/f/0.2.4" fmix.path-ok? 0<> -> true }T
+T{ s" https://github.com/VitaSound/f.git" fmix.url-ok? 0<> -> true }T
+

@@ -19,6 +19,7 @@ require fmix_deps_net.4th
     dep-base-path-u ! dep-base-path-a ! ;
 
 : set-cur-pkg ( addr u -- )
+    fmix.validate-package-name
     fmix.str-dup cur-pkg-name-u ! cur-pkg-name-a ! ;
 
 \ --- Парсер package.4th ---
