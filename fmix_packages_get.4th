@@ -14,7 +14,8 @@ require fmix_deps_net.4th
 \ --- Утилиты настройки ---
 
 : set-default-dep-path
-    s" ./forth-packages" fmix.str-dup 
+    \ f.4th concatenates name directly to fdirectory; trailing slash is required
+    s" ./forth-packages/" fmix.str-dup 
     dep-base-path-u ! dep-base-path-a ! ;
 
 : set-cur-pkg ( addr u -- )

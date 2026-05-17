@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Make `fmix test` return a non-zero exit code when tests fail.
 - Fix failing sample tests and suppress duplicate utility definitions during test runs.
 - Make failed system commands exit GForth with a non-zero status.
+- Fix theforth.net installs writing to `forth-packages<name>` instead of `forth-packages/<name>`.
 
 ### Removed
 - Remove the `dependencies_path_fmix` package option for shared FMix-level dependencies.
