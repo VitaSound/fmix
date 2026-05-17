@@ -51,7 +51,7 @@ require fmix_deps_net.4th
     
     2dup file-status 0<> IF
         s" [ERROR] package.4th not found!" type cr 
-        2drop EXIT
+        2drop fmix.exit
     THEN
     drop
     
