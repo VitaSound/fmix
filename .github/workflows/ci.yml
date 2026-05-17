@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FMIX_HOME: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install GForth
+        run: sudo apt-get update && sudo apt-get install -y gforth
+
+      - name: fmix version
+        run: gforth fmix.4th -e version
+
+      - name: fmix test
+        run: gforth fmix.4th -e test
