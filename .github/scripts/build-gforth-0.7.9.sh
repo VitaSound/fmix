@@ -16,7 +16,10 @@ fi
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
   build-essential git wget ca-certificates \
-  gforth libltdl-dev libffi-dev libtool flex bison zlib1g-dev
+  autoconf automake libtool-bin libltdl-dev libffi-dev flex bison zlib1g-dev \
+  gforth texinfo
+command -v libtool
+libtool --version
 
 WORKDIR="$(mktemp -d)"
 cleanup() { rm -rf "${WORKDIR}"; }
