@@ -194,11 +194,15 @@
 2VARIABLE fmix.param-arg
 
 : fmix.read_args
-    next-arg 2drop 
-    next-arg 
+    next-arg 2drop
+    next-arg
     2dup s" -e" compare 0= IF 2drop next-arg THEN
     fmix.str-dup fmix.cmd-arg 2!
-    next-arg fmix.str-dup fmix.param-arg 2!
+    next-arg 2dup nip IF
+        fmix.str-dup fmix.param-arg 2!
+    ELSE
+        2drop s" " fmix.str-dup fmix.param-arg 2!
+    THEN
 ;
 
 [THEN]
