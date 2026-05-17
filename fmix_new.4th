@@ -82,5 +82,6 @@
     get-target-path s" README.md"   fmix.fs-join
     s" <name>" get-pkg-name replace-in-file
 
-    s" * Done." type cr 
+    s" * Done." type cr
+    fmix.restore-terminal
 ;

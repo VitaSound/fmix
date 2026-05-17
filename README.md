@@ -80,15 +80,22 @@ git clone https://github.com/VitaSound/fmix.git
     nano ~/.zshrc
 
     export FMIX_HOME="$HOME/fmix"
-    fmix() {
-        gforth "$FMIX_HOME/fmix.4th" -e "$@"
-        stty sane 2>/dev/null
-    }
+    export PATH="$FMIX_HOME/bin:$PATH"
 ```
 
-Prefer the `fmix()` function over a plain `alias`: after GForth exits, `stty sane`
-restores the terminal so the shell does not print garbage such as `[?2004l` or
-`0c0c` on the next prompt (often seen on WSL or Windows terminals).
+**Do not** use `alias fmix='gforth "$FMIX_HOME/fmix.4th" -e'` — it leaves the
+terminal in a bad state (`0c0c`, `[?2004l` on the next prompt, common on WSL).
+
+Use the launcher script (or a wrapper around it):
+
+```bash
+fmix() {
+    "$FMIX_HOME/bin/fmix" "$@"
+}
+```
+
+`bin/fmix` runs `stty sane` and resets bracketed-paste mode after every command.
+`fmix new` also calls `stty sane` from Forth before exit.
 
 `FMIX_HOME` points to the installed FMix directory. Commands such as
 `packages.get` and `test` operate on the current project directory where
