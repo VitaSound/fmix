@@ -90,11 +90,17 @@ Run tests
 # Depends
 
 GForth 0.7.9, linux, git, sed, cp.
-WARNING! dont use GForth from snap
+
+WARNING! Do not use GForth from snap. Snap runs GForth in a confined
+environment where the current working directory and filesystem paths may
+not match the shell session. That breaks `new`, `packages.get`, and other
+commands that rely on the project directory. Prefer `apt`, a local build
+under `~/opt/gforth-0.7.9`, or a tarball install.
 
 # Status
 
 - [x] Create package
 - [x] Get dependecies
 - [x] Tests
+- [ ] Fix compatibility with GForth installed via snap (cwd / project paths)
 - [ ] And more..
