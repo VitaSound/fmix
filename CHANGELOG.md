@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### TODO
+- Fix compatibility with GForth installed via snap (cwd and project path detection).
+
+## [0.4.1] - 2026-05-17
+
 ### Added
 - GitHub Actions CI: build and install GForth 0.7.9 from source, then run `gforth fmix.4th -e version` and `gforth fmix.4th -e test`.
 
@@ -33,9 +38,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - Remove the `dependencies_path_fmix` package option for shared FMix-level dependencies.
-
-### TODO
-- Fix compatibility with GForth installed via snap (cwd and project path detection).
 
 ## [0.4.0] - 2026-01-21
 
