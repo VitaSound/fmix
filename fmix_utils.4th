@@ -36,11 +36,20 @@
     $? 0<> IF     \ $? — системное слово, возвращает код возврата последней команды
                   \ если код ≠ 0 (ошибка) → заходим в тело IF
         s" [ERROR] Command failed" type cr
-        bye       \ немедленно завершаем интерпретатор
+        1 (bye)   \ немедленно завершаем интерпретатор с кодом ошибки
     THEN ;
 
 : get-home-path ( -- addr u )
     s" HOME" getenv s" /" fmix.str-concat ;
+
+: fmix.home-path ( -- addr u )
+    s" FMIX_HOME" getenv
+    2dup nip 0= IF
+        2drop s" HOME" getenv s" /fmix" fmix.str-concat
+    THEN ;
+
+: fmix.project-path ( -- addr u )
+    pad 4096 get-dir fmix.str-dup ;
 
 \ создать директорию с родительскими папками
 : ensure-dir ( path u -- )

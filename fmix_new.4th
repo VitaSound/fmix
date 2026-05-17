@@ -10,7 +10,7 @@
     pkg-name-data 2@ ;
 
 : get-priv-path ( -- addr u )
-    get-home-path s" fmix/priv/" fmix.str-concat ;
+    fmix.home-path s" priv/" fmix.fs-join ;
 
 : get-target-path ( -- addr u )
     \ Используем "." для текущей директории

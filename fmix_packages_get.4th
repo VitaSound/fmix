@@ -27,14 +27,7 @@ require fmix_deps_net.4th
 : end-forth-package ;
 
 : key-value ( -- )
-    parse-name 
-    2dup s" dependencies_path_fmix" compare 0= IF
-        2drop
-        get-home-path s" fmix/forth-packages" fmix.str-concat
-        dep-base-path-u ! dep-base-path-a !
-    ELSE
-        2drop fmix-skip-line
-    THEN ;
+    parse-name 2drop fmix-skip-line ;
 
 : key-list ( -- )
     parse-name s" dependencies" compare 0<> IF fmix-skip-line EXIT THEN
@@ -50,7 +43,7 @@ require fmix_deps_net.4th
 : fmix.packages.get
     set-default-dep-path
     
-    s" PWD" getenv s" /" fmix.str-concat s" package.4th" fmix.str-concat
+    fmix.project-path s" package.4th" fmix.fs-join
     
     s" * Reading: " type 2dup type cr
     

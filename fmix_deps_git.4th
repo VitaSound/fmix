@@ -7,11 +7,13 @@ variable git-url-a        variable git-url-u
 variable git-ref-a        variable git-ref-u
 variable git-type-a       variable git-type-u
 variable git-path-a       variable git-path-u
+variable git-parent-a     variable git-parent-u
 
 : git-calc-path ( -- )
     dep-base-path-a @ dep-base-path-u @
     cur-pkg-name-a @ cur-pkg-name-u @
     fmix.fs-join
+    2dup git-parent-u ! git-parent-a !
     
     git-ref-a @ git-ref-u @
     fmix.fs-join
@@ -31,16 +33,19 @@ variable git-path-a       variable git-path-u
 : remove-target-dir ( -- )
     s" rm -rf " git-path-a @ git-path-u @ fmix.str-concat system-checked ;
 
+: ensure-git-parent-dir ( -- )
+    git-parent-a @ git-parent-u @ $1FF mkdir-parents drop ;
+
 \ --- Git команды ---
 
 : is-branch? ( -- f )
     git-type-a @ git-type-u @ s" branch" compare 0= ;
 
 : git-pull-branch ( -- )
-    s" git -C " git-path-a @ git-path-u @ fmix.str-concat
+    s" GIT_TERMINAL_PROMPT=0 git -C " git-path-a @ git-path-u @ fmix.str-concat
     s"  checkout " fmix.str-concat 
     git-ref-a @ git-ref-u @ fmix.str-concat
-    s"  ; git -C " fmix.str-concat
+    s"  && GIT_TERMINAL_PROMPT=0 git -C " fmix.str-concat
     git-path-a @ git-path-u @ fmix.str-concat
     s"  pull origin " fmix.str-concat
     git-ref-a @ git-ref-u @ fmix.str-concat
@@ -48,10 +53,10 @@ variable git-path-a       variable git-path-u
     system-checked ;
 
 : git-pull-tag ( -- )
-    s" git -C " git-path-a @ git-path-u @ fmix.str-concat
+    s" GIT_TERMINAL_PROMPT=0 git -C " git-path-a @ git-path-u @ fmix.str-concat
     s"  fetch origin --tags --force" fmix.str-concat
     
-    s"  ; git -C " fmix.str-concat
+    s"  && GIT_TERMINAL_PROMPT=0 git -C " fmix.str-concat
     git-path-a @ git-path-u @ fmix.str-concat
     s"  -c advice.detachedHead=false checkout --force " fmix.str-concat
     git-ref-a @ git-ref-u @ fmix.str-concat
@@ -61,13 +66,14 @@ variable git-path-a       variable git-path-u
     is-branch? IF git-pull-branch ELSE git-pull-tag THEN ;
 
 : git-clone ( -- )
-    s" git -c advice.detachedHead=false clone -b " 
+    ensure-git-parent-dir
+    s" GIT_TERMINAL_PROMPT=0 git -c advice.detachedHead=false clone -b " 
     git-ref-a @ git-ref-u @ fmix.str-concat
     s"  " fmix.str-concat
     git-url-a @ git-url-u @ fmix.str-concat
     s"  " fmix.str-concat
     git-path-a @ git-path-u @ fmix.str-concat
-    system ; \ system ничего не возвращает на стек!
+    system-checked ;
 
 \ --- Основной процесс ---
 

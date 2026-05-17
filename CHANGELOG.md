@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Resolve FMix internal files from `FMIX_HOME`, with `$HOME/fmix` as fallback.
+- Keep project dependencies relative to the current project in `./forth-packages`.
+- Make git dependency installs create parent directories and fail on git errors.
+
 ### Fixed
 - Make `fmix test` return a non-zero exit code when tests fail.
 - Fix failing sample tests and suppress duplicate utility definitions during test runs.
+- Make failed system commands exit GForth with a non-zero status.
+
+### Removed
+- Remove the `dependencies_path_fmix` package option for shared FMix-level dependencies.
 
 ## [0.4.0] - 2026-01-21
 

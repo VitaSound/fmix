@@ -1,7 +1,22 @@
 \ fmix_test.4th
 \ Этот файл должен лежать рядом с fmix.4th
 require fmix_utils.4th
-require ~/fmix/forth-packages/ttester/1.1.0/ttester.4th
+
+: ttester-project-path ( -- addr u )
+    fmix.project-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join ;
+
+: ttester-fmix-path ( -- addr u )
+    fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join ;
+
+: load-ttester ( -- )
+    ttester-project-path
+    2dup file-status nip 0= IF
+        required
+    ELSE
+        2drop ttester-fmix-path required
+    THEN ;
+
+load-ttester
 
 2VARIABLE test-path
 variable wdirid
@@ -72,12 +87,12 @@ VARIABLE fmix.ERROR 0 fmix.ERROR !
         drop
 
         cr s" * Start Tests" type cr
-        s" PWD" getenv s" /tests" s+ test-path 2!
+        fmix.project-path s" tests" fmix.fs-join test-path 2!
         test-read-dir
     ELSE
         drop
         cr s" * Start Tests for one file: " type
-        s" PWD" getenv test-path 2!
+        fmix.project-path test-path 2!
         fmix.param-arg 2@ test-file-operate
     THEN 
     

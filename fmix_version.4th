@@ -30,8 +30,8 @@ MARKER discard-parser-words
     THEN ;
 
 : load-self-version
-    \ Читаем ~/fmix/package.4th
-    get-home-path s" fmix/package.4th" fmix.str-concat
+    \ Читаем package.4th из установленного FMix
+    fmix.home-path s" package.4th" fmix.fs-join
     
     2dup file-status nip 0= IF
         included

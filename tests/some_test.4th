@@ -1,4 +1,5 @@
-require ~/fmix/forth-packages/ttester/1.1.0/ttester.4th
+require ../fmix_utils.4th
+fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join required
 
 \ see examples:
 \ https://forth-standard.org/standard/testsuite
