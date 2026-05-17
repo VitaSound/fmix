@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 # FMix launcher: restore the shell TTY after GForth exits.
-set -e
 : "${FMIX_HOME:=$HOME/fmix}"
 GFORTH="${GFORTH:-gforth}"
+
+# Same pattern as fhdl in ~/.bashrc: reset bracketed-paste before and after GForth.
+printf '\033[?2004l' 2>/dev/null || true
+
+set +e
 "$GFORTH" "$FMIX_HOME/fmix.4th" -e "$@"
 status=$?
-if [ -t 1 ]; then
-    stty sane 2>/dev/null || true
-    printf '\033[?2004l' >/dev/tty 2>/dev/null || printf '\033[?2004l' 2>/dev/null || true
-fi
+set -e
+
+stty sane 2>/dev/null || true
+printf '\033[?2004l' >/dev/tty 2>/dev/null || printf '\033[?2004l' 2>/dev/null || true
+
 exit "$status"

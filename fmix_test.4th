@@ -103,5 +103,5 @@ VARIABLE fmix.ERROR 0 fmix.ERROR !
         fmix.ERRORS @ . cr
         fmix.exit
     THEN
-
-    ;
+    fmix.restore-terminal
+;

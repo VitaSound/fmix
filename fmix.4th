@@ -17,11 +17,13 @@ require fmix_test.4th
     s"    packages.get     - Install dependencies" type cr
     s"    test [test_file] - Run project tests or test" type cr
     s"    version          - Show version" type cr cr
+    fmix.restore-terminal
 ;
 
 : fmix.version
     \ Используем версию, прочитанную из файла
     cr s" ** (fmix) v" type fmix-ver-data 2@ type cr cr
+    fmix.restore-terminal
 ;
 
 : fmix.newproject
