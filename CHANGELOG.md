@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Make `fmix test` return a non-zero exit code when tests fail.
+- Fix failing sample tests and suppress duplicate utility definitions during test runs.
+
 ## [0.4.0] - 2026-01-21
 
 Global refactory with helps by Google AI Gemini and QWen.code.

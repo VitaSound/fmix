@@ -1,6 +1,8 @@
 \ fmix_utils.4th
 \ Базовые утилиты. Исправлена логика системных вызовов.
 
+[IFUNDEF] fmix.str-concat
+
 \ --- Работа со строками ---
 
 \ соединить две строки в одну новую
@@ -88,3 +90,5 @@
     fmix.str-dup fmix.cmd-arg 2!
     next-arg fmix.str-dup fmix.param-arg 2!
 ;
+
+[THEN]
