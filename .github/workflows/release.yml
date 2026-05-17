@@ -1,12 +1,14 @@
 name: Publish Release
 
 on:
+  push:
+    tags:
+      - "[0-9]*"
   workflow_dispatch:
     inputs:
       tag:
         description: Git tag to publish (must already exist on remote)
         required: true
-        default: "0.4.1"
 
 permissions:
   contents: write
@@ -15,15 +17,32 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve tag name
+        id: meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ steps.meta.outputs.tag }}
+
+      - name: Check release notes file
+        run: |
+          notes=".github/RELEASE_NOTES_${{ steps.meta.outputs.tag }}.md"
+          if [ ! -f "$notes" ]; then
+            echo "::error::Missing $notes — add it before publishing this tag."
+            exit 1
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag }}
-          name: FMix ${{ inputs.tag }}
-          body_path: .github/RELEASE_NOTES_${{ inputs.tag }}.md
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: FMix ${{ steps.meta.outputs.tag }}
+          body_path: .github/RELEASE_NOTES_${{ steps.meta.outputs.tag }}.md
           draft: false
           prerelease: false

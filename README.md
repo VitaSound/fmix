@@ -1,13 +1,13 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.4.1-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.1)
+[![Ver](https://img.shields.io/badge/Ver-0.4.2-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.2)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.4.1 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.4.2 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
    new <name>       - Create new package
@@ -112,6 +112,43 @@ environment where the current working directory and filesystem paths may
 not match the shell session. That breaks `new`, `packages.get`, and other
 commands that rely on the project directory. Prefer `apt`, a local build
 under `~/opt/gforth-0.7.9`, or a tarball install.
+
+# Releasing
+
+Checklist for a new version (e.g. `0.4.3`). Intended as maintainer notes and as
+context for AI assistants helping with the repo.
+
+1. **Implement changes** on `master` (features, fixes, docs).
+2. **Update `CHANGELOG.md`**: move items from `[Unreleased]` into a new section
+   `## [X.Y.Z] - YYYY-MM-DD`.
+3. **Add release notes file**  
+   `.github/RELEASE_NOTES_X.Y.Z.md` — copy the changelog section for that version
+   (GitHub Release body is taken from this file).
+4. **Bump version** in `package.4th` (`key-value version X.Y.Z`) and in `README.md`
+   (badge URL and `FMix vX.Y.Z` in the help example).
+5. **Commit and push** to `origin/master`:
+   ```bash
+   git add -A
+   git commit -m "Release X.Y.Z."
+   git push origin master
+   ```
+6. **Create and push an annotated tag** (triggers [Publish Release](.github/workflows/release.yml)):
+   ```bash
+   git tag -a X.Y.Z -m "FMix X.Y.Z"
+   git push origin X.Y.Z
+   ```
+7. **Verify**: [Actions → Publish Release](https://github.com/VitaSound/fmix/actions/workflows/release.yml)
+   should succeed; check [Releases](https://github.com/VitaSound/fmix/releases).
+
+If the workflow fails with `Missing .github/RELEASE_NOTES_X.Y.Z.md`, add that file
+on `master`, push, then re-run the workflow manually (**Run workflow**, enter the tag)
+or delete and re-push the tag (only if the release was not published yet).
+
+Manual fallback (no tag hook):
+
+```bash
+gh release create X.Y.Z --title "FMix X.Y.Z" --notes-file .github/RELEASE_NOTES_X.Y.Z.md
+```
 
 # Status
 
