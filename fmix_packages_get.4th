@@ -56,5 +56,4 @@ require fmix_deps_net.4th
     drop
     
     included
-    fmix.restore-terminal
 ;

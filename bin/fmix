@@ -3,24 +3,43 @@
 : "${FMIX_HOME:=$HOME/fmix}"
 GFORTH="${GFORTH:-gforth}"
 
-# Same pattern as fhdl in ~/.bashrc: reset bracketed-paste before and after GForth.
-printf '\033[?2004l' 2>/dev/null || true
+reset_tty() {
+    local tty_path
+    tty_path=$(tty 2>/dev/null || true)
+
+    if [ -n "$tty_path" ] && [ "$tty_path" != "not a tty" ] && [ -r "$tty_path" ] && [ -w "$tty_path" ]; then
+        stty sane < "$tty_path" 2>/dev/null || true
+        printf '\033[?2004l' > "$tty_path" 2>/dev/null || true
+
+        # WSL/Windows Terminal can leave terminal responses queued as input
+        # (visible later as "0c" / "0c0c" at the next prompt).
+        local _ch
+        while IFS= read -r -s -t 0.02 -n 1 _ch < "$tty_path"; do
+            :
+        done
+    else
+        stty sane 2>/dev/null || true
+        printf '\033[?2004l' 2>/dev/null || true
+    fi
+}
+
+reset_tty
 
 if [ $# -eq 0 ]; then
-    set -- help
+    FMIX_CMD=help
+    FMIX_PARAM=
+else
+    FMIX_CMD=$1
+    shift
+    FMIX_PARAM=$*
 fi
+export FMIX_CMD FMIX_PARAM
 
 set +e
-"$GFORTH" "$FMIX_HOME/fmix.4th" -e "$@"
+"$GFORTH" "$FMIX_HOME/fmix.4th"
 status=$?
 set -e
 
-if [ -t 0 ]; then
-    stty sane 2>/dev/null || true
-    printf '\033[?2004l' >/dev/tty 2>/dev/null || true
-else
-    stty sane 2>/dev/null || true
-    printf '\033[?2004l' 2>/dev/null || true
-fi
+reset_tty
 
 exit "$status"

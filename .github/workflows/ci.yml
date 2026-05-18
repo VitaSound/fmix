@@ -28,7 +28,7 @@ jobs:
         run: gforth --version 2>&1 | grep -F '0.7.9'
 
       - name: fmix version
-        run: gforth fmix.4th -e version
+        run: FMIX_CMD=version gforth fmix.4th
 
       - name: fmix test
-        run: gforth fmix.4th -e test
+        run: FMIX_CMD=test gforth fmix.4th

@@ -20,32 +20,38 @@ require fmix_test.4th
 ;
 
 : fmix.version
-    \ Используем версию, прочитанную из файла
     cr s" ** (fmix) v" type fmix-ver-data 2@ type cr cr
-    fmix.restore-terminal
 ;
 
 : fmix.newproject
     fmix.param-arg 2@ nip 0= IF
         cr s" Error: 'new' command requires a package name." type cr
-        EXIT
+        fmix.exit
     THEN
     fmix.param-arg 2@ set-pkg-name fmix.new
 ;
 
-: fmix ( -- )
+: fmix-dispatch ( -- )
     fmix.read_args
+    fmix.cmd-arg 2@ nip 0= IF
+        fmix.help
+    ELSE
+        fmix.cmd-arg 2@ s" new" compare 0= IF
+            fmix.newproject
+        ELSE fmix.cmd-arg 2@ s" packages.get" compare 0= IF
+            fmix.packages.get
+        ELSE fmix.cmd-arg 2@ s" test" compare 0= IF
+            fmix.test
+        ELSE fmix.cmd-arg 2@ s" version" compare 0= IF
+            fmix.version
+        ELSE fmix.cmd-arg 2@ s" help" compare 0= IF
+            fmix.help
+        ELSE
+            s" Unknown command: " type fmix.cmd-arg 2@ type cr
+            fmix.help
+        THEN THEN THEN THEN THEN
+    THEN
+    fmix.restore-terminal
+    0 bye ;
 
-    fmix.cmd-arg 2@ nip 0= IF fmix.help EXIT THEN
-
-    fmix.cmd-arg 2@ s" new"          COMPARE 0= IF fmix.newproject    EXIT THEN
-    fmix.cmd-arg 2@ s" packages.get" COMPARE 0= IF fmix.packages.get  EXIT THEN
-    fmix.cmd-arg 2@ s" test"         COMPARE 0= IF fmix.test          EXIT THEN
-    fmix.cmd-arg 2@ s" version"      COMPARE 0= IF fmix.version       EXIT THEN
-    fmix.cmd-arg 2@ s" help"         COMPARE 0= IF fmix.help          EXIT THEN
-    
-    s" Unknown command: " type fmix.cmd-arg 2@ type cr 
-    fmix.help
-;
-
-fmix bye
+fmix-dispatch

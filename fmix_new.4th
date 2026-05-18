@@ -83,5 +83,4 @@
     s" <name>" get-pkg-name replace-in-file
 
     s" * Done." type cr
-    fmix.restore-terminal
 ;

@@ -1,13 +1,13 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.4.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.3)
+[![Ver](https://img.shields.io/badge/Ver-0.4.4-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.4)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.4.3 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.4.4 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
    new <name>       - Create new package
@@ -94,8 +94,8 @@ fmix() {
 }
 ```
 
-`bin/fmix` runs `stty sane` and resets bracketed-paste mode after every command.
-`fmix new` also calls `stty sane` from Forth before exit.
+`bin/fmix` runs `stty sane`, resets bracketed-paste mode, and briefly drains
+queued terminal input after every command.
 
 `FMIX_HOME` points to the installed FMix directory. Commands such as
 `packages.get` and `test` operate on the current project directory where
@@ -129,7 +129,7 @@ under `~/opt/gforth-0.7.9`, or a tarball install.
 
 # Releasing
 
-Checklist for a new version (e.g. `0.4.3`). Intended as maintainer notes and as
+Checklist for a new version (e.g. `0.4.4`). Intended as maintainer notes and as
 context for AI assistants helping with the repo.
 
 1. **Implement changes** on `master` (features, fixes, docs).

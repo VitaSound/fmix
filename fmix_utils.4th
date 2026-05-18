@@ -38,11 +38,11 @@
 \ GForth may leave the TTY in raw/bracketed-paste mode; the shell then prints
 \ garbage such as [?2004l or 0c0c on the next prompt (common on WSL/Windows).
 : fmix.restore-terminal ( -- )
-    s" stty sane 2>/dev/null" system drop ;
+    s" stty sane 2>/dev/null" system ;
 
 : fmix.exit ( -- )
     fmix.restore-terminal
-    1 (bye) ;
+    1 bye ;
 
 : fmix.validation-error-value { value-a value-u label-a label-u -- }
     cr s" [ERROR] Invalid " label-a label-u type type
@@ -194,14 +194,23 @@
 2VARIABLE fmix.param-arg
 
 : fmix.read_args
-    next-arg 2drop
-    next-arg
-    2dup s" -e" compare 0= IF 2drop next-arg THEN
-    fmix.str-dup fmix.cmd-arg 2!
-    next-arg 2dup nip IF
+    s" FMIX_CMD" getenv 2dup nip IF
+        fmix.str-dup fmix.cmd-arg 2!
+    ELSE
+        2drop
+        next-arg 2drop next-arg
+        2dup s" -e" compare 0= IF 2drop next-arg THEN
+        fmix.str-dup fmix.cmd-arg 2!
+    THEN
+    s" FMIX_PARAM" getenv 2dup nip IF
         fmix.str-dup fmix.param-arg 2!
     ELSE
-        2drop s" " fmix.str-dup fmix.param-arg 2!
+        2drop
+        next-arg 2dup nip IF
+            fmix.str-dup fmix.param-arg 2!
+        ELSE
+            2drop s" " fmix.str-dup fmix.param-arg 2!
+        THEN
     THEN
 ;
 
