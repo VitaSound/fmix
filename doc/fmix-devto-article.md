@@ -1,8 +1,11 @@
 ---
-title: "FMix: маленький Mix для Forth"
+title: "FMix: пакетный менеджер для Forth"
 published: false
 tags: forth, opensource, tooling, devtools
 ---
+
+<img width="1536" height="1024" alt="fmix-devto-cover" src="https://github.com/user-attachments/assets/6c70554c-d73e-45c4-bb1c-bd4f2bf411d1" />
+
 
 # FMix: маленький Mix для Forth
 
@@ -283,6 +286,9 @@ fmix version
 В случае Forth это особенно интересно. Forth часто воспринимается как что-то старое, странное и нишевое. Но, возможно, часть этой «старости» находится не только в языке, а в отсутствии привычной современной обвязки.
 
 Если добавить удобные инструменты, язык может ощущаться совсем иначе.
+
+<img width="1536" height="1024" alt="programming-languages-personified-fmix" src="https://github.com/user-attachments/assets/87d7e8ac-94fd-4a4a-a9a8-3a32c658714f" />
+
 
 ## Что дальше
 
