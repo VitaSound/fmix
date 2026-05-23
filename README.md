@@ -1,20 +1,32 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.4.4-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.4.4)
+[![Ver](https://img.shields.io/badge/Ver-0.5.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.5.0)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.4.4 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.5.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
-   new <name>       - Create new package
-   packages.get     - Install dependencies
-   test [test_file] - Run project tests or test
-   version          - Show version
+   new <name>                       - Create new package
+   packages.get                     - Install dependencies
+   test [--isolated|--shared] [f]   - Run project tests or one test
+                                      --isolated (default): each *_test.4th
+                                      in a fresh gforth process.
+                                      --shared: single gforth session for all.
+   version                          - Show version
 ```
+
+### `fmix test` modes
+
+| Mode | When to use |
+|------|-------------|
+| `--isolated` (default) | Every `*_test.4th` runs in its own `gforth` process. A failure / leaked stack / mutated global in one file cannot mask problems in another. This is the modern expectation for test runners and replaces ad-hoc per-project bash scripts like `gforth -e 's" tests/foo_test.4th" included bye'`. |
+| `--shared` | All tests share one `gforth` session. Useful for stress-testing teardown words (e.g. `project-drop` correctly freeing heap structures across many tests). Treats cross-test state coupling as a feature, not a bug. |
+
+Both modes return a non-zero exit code on failure. CI should normally use the default. |
 
 Format of package description, as example:
 

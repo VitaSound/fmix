@@ -31,6 +31,24 @@ if [ $# -eq 0 ]; then
 else
     FMIX_CMD=$1
     shift
+    # Pre-parse `test` command flags so Forth side stays simple.
+    # Recognised: --isolated (default), --shared.
+    if [ "$FMIX_CMD" = "test" ]; then
+        FMIX_TEST_ISOLATED=1
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --isolated) FMIX_TEST_ISOLATED=1; shift ;;
+                --shared)   FMIX_TEST_ISOLATED=0; shift ;;
+                --)         shift; break ;;
+                --*)
+                    echo "[ERROR] Unknown test flag: $1" >&2
+                    exit 1
+                    ;;
+                *) break ;;
+            esac
+        done
+        export FMIX_TEST_ISOLATED
+    fi
     FMIX_PARAM=$*
 fi
 export FMIX_CMD FMIX_PARAM

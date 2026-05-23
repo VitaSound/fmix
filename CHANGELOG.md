@@ -10,6 +10,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 
+## [0.5.0] - 2026-05-23
+
+### Added
+- `fmix test --isolated` (default) runs each `*_test.4th` in a fresh `gforth`
+  subprocess. A failure (or a leaked stack / mutated global state) in one
+  test file can no longer mask problems in the next file. This replaces the
+  ad-hoc per-project bash runners that wrapped `gforth -e '… included bye'`.
+- `fmix test --shared` keeps the legacy single-session behaviour for projects
+  that intentionally exercise cross-test state (e.g. `project-drop` correctly
+  freeing all heap structures across many tests).
+- Flag parsing is done in `bin/fmix` (bash) and passed to Forth via
+  `FMIX_TEST_ISOLATED=1|0`; unknown `--flags` after `test` are rejected with
+  exit code 1.
+
+### Changed
+- **Default test mode is now `--isolated`.** Projects that rely on the
+  cross-test shared session must explicitly use `--shared`.
+
+### Fixed
+- `fmix.exit` now actually exits with status 1: Gforth's `bye` ignores its
+  TOS, so `1 bye` was equivalent to `bye` (status 0). Use `1 (bye)` instead.
+  Without this fix, `fmix test` always returned 0 from the launcher even
+  when individual tests failed — breaking CI.
+
 ## [0.4.4] - 2026-05-18
 
 ### Fixed

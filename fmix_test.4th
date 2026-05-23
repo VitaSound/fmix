@@ -24,6 +24,31 @@ create test-buff 255 allot
 VARIABLE fmix.ERRORS 0 fmix.ERRORS !
 VARIABLE fmix.ERROR 0 fmix.ERROR !
 
+\ --- isolated/shared mode ---------------------------------------------------
+\ Default is isolated: every *_test.4th file runs in a fresh gforth process,
+\ so a failure (or stack leak, or global-state mutation) in one file cannot
+\ mask problems in another.  Shared mode (--shared) keeps the legacy behaviour
+\ of loading every test into a single gforth session — useful for catching
+\ cross-test memory or global-state leaks (e.g. project-drop forgets to free
+\ a list), but unsafe as the default.
+\
+\ The bash launcher (bin/fmix) parses --isolated / --shared and sets
+\ FMIX_TEST_ISOLATED to "1" or "0".  Absent variable means isolated.
+variable fmix.test-isolated?
+true fmix.test-isolated? !
+
+: fmix.read-isolated-mode ( -- )
+    s" FMIX_TEST_ISOLATED" getenv 2dup nip 0= IF
+        2drop true fmix.test-isolated? ! EXIT
+    THEN
+    s" 0" compare 0= IF
+        false fmix.test-isolated? !
+    ELSE
+        true fmix.test-isolated? !
+    THEN ;
+
+fmix.read-isolated-mode
+
 : fail-fast-error ( addr u -- )
     s" ERROR" type cr
     type cr
@@ -39,14 +64,36 @@ VARIABLE fmix.ERROR 0 fmix.ERROR !
 : get-test-path
     test-path 2@ ;
 
-: test-file-operate 
-    get-test-path 2swap fmix.fs-join 
+\ Build a shell command that runs one test file in a fresh gforth process.
+\ Result: gforth -e 's" <abs-path>" included bye'
+: fmix.build-isolated-cmd ( file-a file-u -- cmd-a cmd-u )
+    s\" gforth -e 's\" "
+    2swap fmix.str-concat
+    s\" \" included bye'"
+    fmix.str-concat ;
+
+\ Run one test file in a fresh gforth subprocess; update ERROR/ERRORS.
+: fmix.run-isolated ( file-a file-u -- )
+    fmix.build-isolated-cmd
+    2dup system
+    drop free throw                \ free the command buffer allocated by str-concat
+    $? 0<> IF
+        1 fmix.ERRORS +!
+        1 fmix.ERROR !
+    THEN ;
+
+: test-file-operate
+    get-test-path 2swap fmix.fs-join
     2dup type
     s"  - " type
 
     0 fmix.ERROR !
 
-    included 
+    fmix.test-isolated? @ IF
+        cr fmix.run-isolated
+    ELSE
+        included
+    THEN
 
     fmix.ERROR @ 0= IF
         s" OK" type cr

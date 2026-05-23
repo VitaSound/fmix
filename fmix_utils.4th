@@ -42,7 +42,7 @@
 
 : fmix.exit ( -- )
     fmix.restore-terminal
-    1 bye ;
+    1 (bye) ;             \ Gforth: `bye` ignores its TOS, use (bye) for exit code
 
 : fmix.validation-error-value { value-a value-u label-a label-u -- }
     cr s" [ERROR] Invalid " label-a label-u type type
