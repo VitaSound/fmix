@@ -43,8 +43,9 @@ require fmix_deps_net.4th
     THEN ;
 
 : fmix.packages.get
+    fmix.assert-min-version
     set-default-dep-path
-    
+
     fmix.project-path s" package.4th" fmix.fs-join
     
     s" * Reading: " type 2dup type cr

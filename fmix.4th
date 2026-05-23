@@ -3,6 +3,7 @@
 
 require fmix_utils.4th
 require fmix_version.4th
+require fmix_version_check.4th
 require fmix_new.4th
 require fmix_packages_get.4th
 require fmix_test.4th

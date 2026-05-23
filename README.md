@@ -1,13 +1,13 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.5.1-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.5.1)
+[![Ver](https://img.shields.io/badge/Ver-0.6.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.6.0)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.5.1 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.6.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
    new <name>                                - Create new package
@@ -19,6 +19,31 @@ Commands:
                                                --shared: single session for all.
    version                                   - Show version
 ```
+
+### Version pinning
+
+A project's `package.4th` can pin the minimum fmix it requires by adding a
+self-referential dependency:
+
+```forth
+forth-package
+    key-value name myproj
+    key-value version 0.0.1
+    key-value main myproj.4th
+    key-list dependencies fmix 0.6.0
+end-forth-package
+```
+
+If you `cd` into that project and your `$PATH` fmix is older, project-scoped
+commands (`fmix test`, `fmix packages.get`) refuse to run with a message like:
+
+```
+[ERROR] This project requires fmix 0.6.0 or higher, but you have 0.5.1
+        Update fmix (https://github.com/VitaSound/fmix) and retry.
+```
+
+`fmix version` and `fmix help` are deliberately exempt so you can still see
+what tool you have when it's refusing to do work.
 
 ### `fmix test` modes
 

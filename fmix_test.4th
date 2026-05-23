@@ -109,7 +109,7 @@ fmix.read-isolated-mode
 
 : test-file-filter
 
-    2dup s" _test." search 
+    2dup s" _test.4th" search
     IF
         2drop
         s" * Test file: " type
@@ -135,6 +135,7 @@ fmix.read-isolated-mode
     THEN ;
 
 : fmix.test
+    fmix.assert-min-version
     fmix.param-arg 2@
 
     0= IF

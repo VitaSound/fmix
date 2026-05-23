@@ -10,6 +10,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 
+## [0.6.0] - 2026-05-24
+
+### Added
+
+- `fmix_version_check.4th`: read the project's `./package.4th` at load
+  time, find a `key-list dependencies fmix <version>` entry, and bail
+  out with a clear error if the installed fmix is older than what the
+  project asks for. Runs at the entry of `fmix test` and
+  `fmix packages.get` (project-scoped commands). `fmix version` and
+  `fmix help` are deliberately exempt so you can still introspect the
+  tool when it refuses to do work — that's how you find out what to
+  upgrade.
+- Supported dependency forms (matched against name `fmix`):
+  - `key-list dependencies fmix 0.6.0`
+  - `key-list dependencies fmix git <url> tag 0.6.0`
+  The `git ... branch <name>` form has no version, so no check.
+- Best-effort semver parser/comparator (`fmix.parse-semver`,
+  `fmix.semver-cmp`). Tolerates missing/garbage components by collapsing
+  them to 0 instead of crashing.
+- `tests/fmix_version_check_test.4th` (unit tests for parse + cmp) and
+  `tests/version_check_integration_test.sh` (drives a fixture project
+  pinning `fmix 99.0.0` and asserts that `fmix test` / `packages.get`
+  refuse to run while `fmix version` / `help` still work).
+
+### Changed
+
+- Tighten `fmix test` file filter from `_test.` to `_test.4th`. The
+  looser pattern previously picked up files like
+  `tests/version_check_integration_test.sh` and tried to feed them to
+  gforth, producing spurious failures.
+
+### Self-dependency
+
+- fmix's own `package.4th` now declares
+  `key-list dependencies fmix 0.6.0` — eats its own dog food.
+
 ## [0.5.1] - 2026-05-23
 
 ### Fixed
