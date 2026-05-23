@@ -65,11 +65,18 @@ fmix.read-isolated-mode
     test-path 2@ ;
 
 \ Build a shell command that runs one test file in a fresh gforth process.
-\ Result: gforth -e 's" <abs-path>" included bye'
+\ Result: TERM=dumb gforth -e 's" <abs-path>" included bye' </dev/null
+\
+\ - </dev/null  : the subprocess has no tty stdin, so gforth/readline cannot
+\                 issue OSC 11 (background-colour query) and similar; any
+\                 terminal reply would otherwise leak into the parent shell's
+\                 input buffer between subprocesses.
+\ - TERM=dumb   : extra belt-and-braces — disables terminal escape sequences
+\                 from gforth's startup banner / readline init on WSL/xterm.
 : fmix.build-isolated-cmd ( file-a file-u -- cmd-a cmd-u )
-    s\" gforth -e 's\" "
+    s\" TERM=dumb gforth -e 's\" "
     2swap fmix.str-concat
-    s\" \" included bye'"
+    s\" \" included bye' </dev/null"
     fmix.str-concat ;
 
 \ Run one test file in a fresh gforth subprocess; update ERROR/ERRORS.

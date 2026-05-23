@@ -1,6 +1,6 @@
 forth-package
     key-value name fmix
-    key-value version 0.5.0
+    key-value version 0.5.1
     key-value license COPL
     key-value description Forth build tool
     key-value main fmix.4th

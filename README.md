@@ -1,22 +1,23 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.5.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.5.0)
+[![Ver](https://img.shields.io/badge/Ver-0.5.1-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.5.1)
 
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
 
 ```bash
 $ fmix
 
-FMix v0.5.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.5.1 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
-   new <name>                       - Create new package
-   packages.get                     - Install dependencies
-   test [--isolated|--shared] [f]   - Run project tests or one test
-                                      --isolated (default): each *_test.4th
-                                      in a fresh gforth process.
-                                      --shared: single gforth session for all.
-   version                          - Show version
+   new <name>                                - Create new package
+   packages.get                              - Install dependencies
+   test [--isolated|--shared] [<test_file>]  - Run all *_test.4th in
+                                               ./tests, or one given file.
+                                               --isolated (default): each test
+                                               in a fresh gforth process.
+                                               --shared: single session for all.
+   version                                   - Show version
 ```
 
 ### `fmix test` modes

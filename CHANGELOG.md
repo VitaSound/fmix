@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 
+## [0.5.1] - 2026-05-23
+
+### Fixed
+- `fmix test --isolated`: terminal garbage between subprocesses on WSL/xterm
+  (`^[]11;rgb:0c0c/0c0c/0c0c^[\\…`). Each subprocess now runs with
+  `TERM=dumb gforth … </dev/null`: with no tty stdin, gforth/readline cannot
+  issue OSC 11 (background-colour query), so the terminal never replies into
+  the parent shell's input buffer between tests.
+
+### Changed
+- Clearer `fmix help` for `test`: `[f]` → `[<test_file>]`, aligned columns.
+
 ## [0.5.0] - 2026-05-23
 
 ### Added

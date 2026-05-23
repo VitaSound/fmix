@@ -13,13 +13,14 @@ require fmix_test.4th
     s"  is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies." type cr
     s" Usage: fmix <command> [args]" type cr
     s" Commands:" type cr
-    s"    new <name>                       - Create new package" type cr
-    s"    packages.get                     - Install dependencies" type cr
-    s"    test [--isolated|--shared] [f]   - Run project tests or one test" type cr
-    s"                                       --isolated (default): each *_test.4th" type cr
-    s"                                       in a fresh gforth process." type cr
-    s"                                       --shared: single gforth session for all." type cr
-    s"    version                          - Show version" type cr cr
+    s"    new <name>                                - Create new package" type cr
+    s"    packages.get                              - Install dependencies" type cr
+    s"    test [--isolated|--shared] [<test_file>]  - Run all *_test.4th in" type cr
+    s"                                                ./tests, or one given file." type cr
+    s"                                                --isolated (default): each test" type cr
+    s"                                                in a fresh gforth process." type cr
+    s"                                                --shared: single session for all." type cr
+    s"    version                                   - Show version" type cr cr
 ;
 
 : fmix.version
