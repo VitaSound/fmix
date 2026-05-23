@@ -7,8 +7,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- `bin/fmix`: only manipulates the terminal when stdout *is* a tty.
+  Previously, when output was captured (`out=$(fmix …)`) the bracketed-
+  paste reset escape leaked into the captured string as literal text
+  `[?2004l`.
+- `bin/fmix`: aligned with the shared launcher pattern used by
+  `bin/flint` (and any future `bin/fcov`): `$<TOOL>_HOME`,
+  `$<TOOL>_CMD`, `$<TOOL>_ARG`. The legacy `FMIX_PARAM` env var is
+  still honoured for back-compat.
+- `bin/fmix` header documents the recommended `~/.bashrc` snippet:
+  `export PATH="$HOME/fmix/bin:$HOME/flint/bin:$HOME/fcov/bin:$PATH"`.
+- `package.4th`: re-ordered to keep mandatory fields first, added
+  `tags`, removed commented-out example dependency lines that were
+  noise.
+- README: links into the VitaSound tooling family (flint, ttester,
+  fenum), new `Install` section with `~/.bashrc` snippet.
+
+### Added
+- `README.ru.md` — full Russian translation of the README.
+
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
+- For `dependencies fmix <ver>` (and future fcov/flint), skip the
+  attempt to fetch from theforth.net — the entry exists purely for the
+  version-check; the actual install is via the bin launcher.
 
 ## [0.6.0] - 2026-05-24
 

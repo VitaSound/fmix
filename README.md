@@ -2,7 +2,30 @@
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
 [![Ver](https://img.shields.io/badge/Ver-0.6.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.6.0)
 
+[Русская версия](README.ru.md)
+
 FMix is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies, and more.
+
+Part of the [VitaSound Forth tooling family](https://github.com/VitaSound):
+fmix (this tool), [flint](https://github.com/VitaSound/flint) (linter),
+[ttester](https://github.com/VitaSound/ttester) (testing utility),
+[fenum](https://github.com/VitaSound/fenum) (universal containers).
+
+## Install
+
+```bash
+cd ~ && git clone git@github.com:VitaSound/fmix.git
+```
+
+Add to your `~/.bashrc` (or `~/.zshrc`):
+
+```bash
+# VitaSound Forth tooling
+export PATH="$HOME/fmix/bin:$HOME/flint/bin:$PATH"
+```
+
+If you keep fmix somewhere other than `$HOME/fmix`, set `$FMIX_HOME`
+before invoking `fmix` (the launcher honours it).
 
 ```bash
 $ fmix

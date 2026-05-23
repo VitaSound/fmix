@@ -202,14 +202,21 @@
         2dup s" -e" compare 0= IF 2drop next-arg THEN
         fmix.str-dup fmix.cmd-arg 2!
     THEN
-    s" FMIX_PARAM" getenv 2dup nip IF
+    \ Single arg slot for every tool launcher (FMIX_ARG). The legacy
+    \ FMIX_PARAM name is still honoured so older scripts keep working.
+    s" FMIX_ARG" getenv 2dup nip IF
         fmix.str-dup fmix.param-arg 2!
     ELSE
         2drop
-        next-arg 2dup nip IF
+        s" FMIX_PARAM" getenv 2dup nip IF
             fmix.str-dup fmix.param-arg 2!
         ELSE
-            2drop s" " fmix.str-dup fmix.param-arg 2!
+            2drop
+            next-arg 2dup nip IF
+                fmix.str-dup fmix.param-arg 2!
+            ELSE
+                2drop s" " fmix.str-dup fmix.param-arg 2!
+            THEN
         THEN
     THEN
 ;

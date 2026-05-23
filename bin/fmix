@@ -1,37 +1,53 @@
 #!/usr/bin/env bash
-# FMix launcher: restore the shell TTY after GForth exits.
+# fmix launcher — Forth package/build tool.
+#
+# Conventions (shared with bin/flint and any future bin/fcov):
+#   - $<TOOL>_HOME  ─ where the tool's source tree lives. Defaults to
+#                     $HOME/<tool>; override per-shell if you keep tools
+#                     elsewhere.
+#   - $<TOOL>_CMD   ─ subcommand (test, packages.get, version, …).
+#   - $<TOOL>_ARG   ─ single positional argument string, if any.
+#   - reset_tty     ─ only fires when stdout actually is a tty.
+#
+# Recommended ~/.bashrc snippet (one line per tool):
+#
+#   export PATH="$HOME/fmix/bin:$HOME/flint/bin:$HOME/fcov/bin:$PATH"
+#
 : "${FMIX_HOME:=$HOME/fmix}"
 GFORTH="${GFORTH:-gforth}"
 
 reset_tty() {
+    # Only manipulate the terminal if we actually have one to manipulate.
+    # When stdout is a pipe or file, sending `\033[?2004l` would land in the
+    # captured output as the literal text `[?2004l`. No tty → nothing to
+    # reset → skip silently.
     local tty_path
     tty_path=$(tty 2>/dev/null || true)
+    case "$tty_path" in
+        ""|"not a tty") return ;;
+    esac
+    [ -r "$tty_path" ] && [ -w "$tty_path" ] || return
 
-    if [ -n "$tty_path" ] && [ "$tty_path" != "not a tty" ] && [ -r "$tty_path" ] && [ -w "$tty_path" ]; then
-        stty sane < "$tty_path" 2>/dev/null || true
-        printf '\033[?2004l' > "$tty_path" 2>/dev/null || true
+    stty sane < "$tty_path" 2>/dev/null || true
+    printf '\033[?2004l' > "$tty_path" 2>/dev/null || true
 
-        # WSL/Windows Terminal can leave terminal responses queued as input
-        # (visible later as "0c" / "0c0c" at the next prompt).
-        local _ch
-        while IFS= read -r -s -t 0.02 -n 1 _ch < "$tty_path"; do
-            :
-        done
-    else
-        stty sane 2>/dev/null || true
-        printf '\033[?2004l' 2>/dev/null || true
-    fi
+    # WSL/Windows Terminal can leave terminal responses queued as input
+    # (visible later as `0c` / `0c0c` at the next prompt).
+    local _ch
+    while IFS= read -r -s -t 0.02 -n 1 _ch < "$tty_path"; do
+        :
+    done
 }
 
 reset_tty
 
 if [ $# -eq 0 ]; then
     FMIX_CMD=help
-    FMIX_PARAM=
+    FMIX_ARG=
 else
     FMIX_CMD=$1
     shift
-    # Pre-parse `test` command flags so Forth side stays simple.
+    # Pre-parse `test` command flags so the Forth side stays simple.
     # Recognised: --isolated (default), --shared.
     if [ "$FMIX_CMD" = "test" ]; then
         FMIX_TEST_ISOLATED=1
@@ -49,15 +65,18 @@ else
         done
         export FMIX_TEST_ISOLATED
     fi
-    FMIX_PARAM=$*
+    FMIX_ARG=$*
 fi
-export FMIX_CMD FMIX_PARAM
+export FMIX_HOME FMIX_CMD FMIX_ARG
 
 set +e
-"$GFORTH" "$FMIX_HOME/fmix.4th"
+# `fpath also-path $FMIX_HOME` so any future `require fmix/xxx.4th`
+# resolves regardless of which directory the user invoked fmix from.
+"$GFORTH" \
+    -e "s\" $FMIX_HOME\" fpath also-path" \
+    "$FMIX_HOME/fmix.4th"
 status=$?
 set -e
 
 reset_tty
-
 exit "$status"
