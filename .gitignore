@@ -1,0 +1,5 @@
+build/
+.fcov/
+*.swp
+*.swo
+.DS_Store

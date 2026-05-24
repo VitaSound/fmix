@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 
+## [0.7.2] - 2026-05-24
+
+### Added
+- `package.4th`: declare `key-value fcov ~> 0.3` (ecosystem-wide
+  coverage participation) and `key-list fcov-exclude priv` /
+  `tests/fixtures` so fcov reports the fmix codebase itself, not its
+  scaffold templates or fixture projects. Current baseline on
+  `fcov run fmix test`: 42/94 (44 %) — most uncovered code lives in
+  `fmix_deps_git` and `fmix_new`, which are exercised by black-box
+  `.sh` integration tests invisible to fcov.
+- `.gitignore`: ignore `.fcov/` runtime artefacts (build/ already
+  was, forth-packages/ stays tracked because it vendors fsemver).
+
 ## [0.7.1] - 2026-05-24
 
 ### Changed
