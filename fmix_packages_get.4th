@@ -31,11 +31,29 @@ require fmix_deps_net.4th
 : key-value ( -- )
     parse-name 2drop fmix-skip-line ;
 
+\ Tool self-dependencies (`fmix`, `flint`, `fcov`) used to be expressed
+\ as `key-list dependencies fmix <ver>` in pre-0.7.0 projects. The
+\ canonical form is now `key-value fmix ~> <X.Y>` (see
+\ fmix_version_check.4th) and that path errors out with a migration
+\ hint before we ever get here. We keep this skip as a belt-and-braces
+\ safety net so that, even if version_check is bypassed somehow, we
+\ never try to fetch `fmix` (and friends) from theforth.net — that
+\ endpoint doesn't exist and returns HTTP 500.
+: fmix.is-tool-dep? ( a u -- f )
+    2dup s" fmix"  compare 0= IF 2drop true EXIT THEN
+    2dup s" flint" compare 0= IF 2drop true EXIT THEN
+    2dup s" fcov"  compare 0= IF 2drop true EXIT THEN
+    2drop false ;
+
 : key-list ( -- )
     parse-name s" dependencies" compare 0<> IF fmix-skip-line EXIT THEN
-    
-    parse-name set-cur-pkg
-    
+
+    parse-name 2dup fmix.is-tool-dep? IF
+        2drop fmix-skip-line EXIT
+    THEN
+
+    set-cur-pkg
+
     parse-name 2dup s" git" compare 0= IF
         2drop parse-git-args  \ Вызов из fmix_deps_git.4th
     ELSE

@@ -17,12 +17,15 @@ fmix (this tool), [flint](https://github.com/VitaSound/flint) (linter),
 cd ~ && git clone git@github.com:VitaSound/fmix.git
 ```
 
-Add to your `~/.bashrc` (or `~/.zshrc`):
+Add to your `~/.bashrc` (or `~/.zshrc`) — one line per tool so each
+stays independent (install/remove without touching the rest):
 
 ```bash
-# VitaSound Forth tooling
-export PATH="$HOME/fmix/bin:$HOME/flint/bin:$PATH"
+export PATH="$HOME/fmix/bin:$PATH"
 ```
+
+(sibling tools get their own lines: `export PATH="$HOME/flint/bin:$PATH"`,
+`export PATH="$HOME/fcov/bin:$PATH"`, etc.)
 
 If you keep fmix somewhere other than `$HOME/fmix`, set `$FMIX_HOME`
 before invoking `fmix` (the launcher honours it).
@@ -30,7 +33,7 @@ before invoking `fmix` (the launcher honours it).
 ```bash
 $ fmix
 
-FMix v0.6.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
+FMix v0.7.0 is a build tool that provides tasks for creating, and testing Forth packages, managing its dependencies.
 Usage: fmix <command> [args]
 Commands:
    new <name>                                - Create new package
@@ -43,30 +46,56 @@ Commands:
    version                                   - Show version
 ```
 
-### Version pinning
+### Version pinning (`key-value fmix ~> X.Y`)
 
-A project's `package.4th` can pin the minimum fmix it requires by adding a
-self-referential dependency:
+fmix is a runtime/tooling requirement, not a library, so projects pin it
+as a top-level `key-value` (in the same spirit as `elixir: "~> 1.15"` in
+`mix.exs`) rather than as a `key-list dependencies` entry:
 
 ```forth
 forth-package
     key-value name myproj
     key-value version 0.0.1
     key-value main myproj.4th
-    key-list dependencies fmix 0.6.0
+    key-value fmix ~> 0.7
 end-forth-package
 ```
 
-If you `cd` into that project and your `$PATH` fmix is older, project-scoped
-commands (`fmix test`, `fmix packages.get`) refuse to run with a message like:
+| Form | Means |
+|------|-------|
+| `key-value fmix ~> 0.7` | `>= 0.7.0` and `< 1.0.0` (MAJOR pinned — Hex-style "pessimistic" operator) |
+| `key-value fmix ~> 0.7.2` | `>= 0.7.2` and `< 0.8.0` (MAJOR+MINOR pinned) |
+| `key-value fmix >= 0.7.0` | minimum, no upper bound |
+| `key-value fmix == 0.7.0` | exact match |
+| `key-value fmix >  0.7.0` | strictly greater |
+| `key-value fmix <  1.0.0` | strictly less |
+| `key-value fmix <= 0.7.5` | less-or-equal |
+| `key-value fmix 0.7.0`    | bare = `>= 0.7.0` |
+
+Parsing and matching is delegated to the standalone
+[fsemver](https://github.com/VitaSound/fsemver) package (vendored at
+`forth-packages/fsemver/0.1.0/`). flint and any future tool (fcov, …)
+use the same engine — no behavioural drift between linters/runners.
+
+If your `$PATH` fmix doesn't satisfy the requirement, project-scoped
+commands (`fmix test`, `fmix packages.get`) refuse to run with a message
+like:
 
 ```
-[ERROR] This project requires fmix 0.6.0 or higher, but you have 0.5.1
+[ERROR] This project requires fmix ~> 0.7, but you have 0.6.5
         Update fmix (https://github.com/VitaSound/fmix) and retry.
 ```
 
-`fmix version` and `fmix help` are deliberately exempt so you can still see
-what tool you have when it's refusing to do work.
+`fmix version` and `fmix help` are deliberately exempt so you can still
+see what tool you have when it's refusing to do work.
+
+**Migration from 0.6.x.** The previous form,
+```forth
+key-list dependencies fmix 0.6.0
+```
+is no longer supported (fmix isn't on theforth.net and `packages.get`
+would 500). Loading such a project gives a clear error pointing at the
+new syntax — one-line edit in `package.4th`.
 
 ### `fmix test` modes
 

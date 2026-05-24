@@ -38,12 +38,17 @@ Forth](https://github.com/VitaSound): fmix (этот инструмент),
 cd ~ && git clone git@github.com:VitaSound/fmix.git
 ```
 
-В `~/.bashrc` (или `~/.zshrc`):
+В `~/.bashrc` (или `~/.zshrc`) — по одной строке на каждый
+инструмент, чтобы они оставались независимы (установить/удалить любой
+можно отдельно):
 
 ```bash
-# Инструменты VitaSound для Forth
-export PATH="$HOME/fmix/bin:$HOME/flint/bin:$PATH"
+export PATH="$HOME/fmix/bin:$PATH"
 ```
+
+(для соседних инструментов добавляйте свои строки:
+`export PATH="$HOME/flint/bin:$PATH"`,
+`export PATH="$HOME/fcov/bin:$PATH"` и т. п.)
 
 Если fmix лежит не в `$HOME/fmix`, экспортируйте `$FMIX_HOME` перед
 вызовом.
@@ -55,32 +60,57 @@ source ~/.bashrc
 fmix version
 ```
 
-## Привязка минимальной версии (version pinning)
+## Привязка версии fmix (`key-value fmix ~> X.Y`)
 
-В `package.4th` проекта можно зафиксировать минимально требуемую версию
-fmix через самозависимость:
+fmix — это runtime-инструмент, а не библиотека. Поэтому проект
+объявляет требование к версии fmix как top-level `key-value` (в духе
+`elixir: "~> 1.15"` в `mix.exs`), а не как `key-list dependencies`:
 
 ```forth
 forth-package
     key-value name myproj
     key-value version 0.0.1
     key-value main myproj.4th
-    key-list dependencies fmix 0.6.0
+    key-value fmix ~> 0.7
 end-forth-package
 ```
 
-Если зайти в такой проект и попытаться запустить более старый fmix,
-команды уровня проекта (`fmix test`, `fmix packages.get`) откажутся
-работать и скажут:
+| Запись | Что означает |
+|--------|--------------|
+| `key-value fmix ~> 0.7` | `>= 0.7.0` и `< 1.0.0` (MAJOR зафиксирован — pessimistic operator) |
+| `key-value fmix ~> 0.7.2` | `>= 0.7.2` и `< 0.8.0` (MAJOR+MINOR зафиксированы) |
+| `key-value fmix >= 0.7.0` | минимум, без верхней границы |
+| `key-value fmix == 0.7.0` | ровно эта версия |
+| `key-value fmix >  0.7.0` | строго больше |
+| `key-value fmix <  1.0.0` | строго меньше |
+| `key-value fmix <= 0.7.5` | меньше-или-равно |
+| `key-value fmix 0.7.0`    | голая версия = `>= 0.7.0` |
+
+Парсинг и матчинг делегированы отдельной библиотеке
+[fsemver](https://github.com/VitaSound/fsemver) (вендорится в
+`forth-packages/fsemver/0.1.0/`). flint и любой будущий инструмент
+(fcov, …) используют тот же движок — никакого расхождения поведения
+между линтерами и раннерами.
+
+Если установленный fmix не подходит, команды уровня проекта (`fmix test`,
+`fmix packages.get`) отказываются работать и пишут что-то вроде:
 
 ```
-[ERROR] This project requires fmix 0.6.0 or higher, but you have 0.5.1
+[ERROR] This project requires fmix ~> 0.7, but you have 0.6.5
         Update fmix (https://github.com/VitaSound/fmix) and retry.
 ```
 
-Команды `fmix version` и `fmix help` намеренно работают всегда — чтобы
-вы могли посмотреть, какая у вас версия, даже когда инструмент
+Команды `fmix version` и `fmix help` намеренно работают всегда —
+чтобы можно было посмотреть текущую версию, даже когда инструмент
 отказывается выполнять работу.
+
+**Миграция с 0.6.x.** Старый формат
+```forth
+key-list dependencies fmix 0.6.0
+```
+больше не поддерживается (fmix не лежит на theforth.net, и `packages.get`
+получал бы HTTP 500). При загрузке такого `package.4th` fmix даёт
+понятную ошибку с подсказкой — исправление в одну строку.
 
 ## Режимы `fmix test`
 
@@ -93,6 +123,50 @@ end-forth-package
 `fmix test --shared` — полезно когда нужно специально ловить
 кросс-тестовые утечки (например, `project-drop` забывает освободить
 список).
+
+## Публикация на theforth.net
+
+[theforth.net](https://theforth.net/) — официальный реестр
+Forth-пакетов. fmix умеет тянуть оттуда зависимости (`key-list
+dependencies <name> <ver>`), но и сам fmix тоже не помешает туда
+выложить — чтобы соседние проекты могли его прописать в `package.4th`.
+
+Краткая инструкция (по [guidelines](https://theforth.net/guidelines)):
+
+1. Создай аккаунт: <https://theforth.net/profile>.
+
+2. Проверь свой `package.4th` — он должен соответствовать формату из
+   guidelines:
+   - обязательные поля: `name` (только `[a-z][-a-z0-9]*`), `version`
+     в формате `MAJOR.MINOR.PATCH`, `license`, `main`,
+   - желательные: `description`, `key-list tags …`,
+   - `key-list dependencies <name> <version>` для зависимостей.
+
+3. Собери архив. **Корневая папка в архиве должна точно совпадать с
+   полем `name`** в `package.4th`, и сам `package.4th` лежит в её
+   корне. Из `fmix`-репозитория это удобно делать так:
+
+   ```bash
+   cd ~                                          # на уровень выше fmix/
+   tar czf fmix-0.6.0.tar.gz \
+       --exclude='fmix/.git' \
+       --exclude='fmix/forth-packages' \
+       --exclude='fmix/build' \
+       fmix
+   ```
+
+   (Аналогично для других проектов — поменять имя и версию.)
+
+4. Залогинься на theforth.net, перейди в [Profile](https://theforth.net/profile)
+   и загрузи архив через форму upload.
+
+5. После публикации НЕ меняй `version` для уже загруженного слота —
+   повышай его по SemVer:
+   - **PATCH** — обратно-совместимый багфикс,
+   - **MINOR** — обратно-совместимое добавление функциональности,
+   - **MAJOR** — несовместимое изменение API.
+
+   То же требование зашито в guidelines theforth.net.
 
 ## Лицензия
 

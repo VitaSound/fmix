@@ -1,8 +1,17 @@
 \ tests/fmix_version_check_test.4th
-\ Unit tests for the semver parser/comparator in fmix_version_check.4th.
-\ The integration test (a fixture project that requires fmix 99.0.0 and
-\ must be rejected by `fmix test` / `fmix packages.get`) lives in
-\ tests/fixtures/version_check/ and is exercised by
+\
+\ Thin smoke-test for fmix_version_check.4th.
+\
+\ The heavy lifting (parse-req, req-matches?, parse-version-parts,
+\ semver-cmp) now lives in fsemver and is covered by 71 assertions in
+\ ../forth-packages/fsemver/0.1.0/tests/fsemver_test.4th. This file only
+\ verifies the wiring:
+\   - fsemver loads cleanly through fmix_version_check.4th's require chain
+\   - fmix.required-fmix-req / fmix.legacy-self-dep? exist & are zeroed
+\   - the public fsemver.* words are reachable from fmix's load context
+\
+\ End-to-end behaviour ("project pinning a too-new fmix is rejected",
+\ "legacy form errors with a hint", etc.) lives in
 \ tests/version_check_integration_test.sh.
 
 require ../fmix_utils.4th
@@ -13,44 +22,30 @@ fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join require
 
 0 #ERRORS !
 
-\ --- parse-semver --------------------------------------------------------
+\ --- Wiring: fsemver public API is visible ------------------------------
 
-T{ s" 0.0.0"   fmix.parse-semver -> 0 0 0 }T
-T{ s" 1.2.3"   fmix.parse-semver -> 1 2 3 }T
-T{ s" 0.5.1"   fmix.parse-semver -> 0 5 1 }T
-T{ s" 10.0.0"  fmix.parse-semver -> 10 0 0 }T
-T{ s" 0.20.7"  fmix.parse-semver -> 0 20 7 }T
+T{ s" 1.2.3"   fsemver.parse-version-parts -> 1 2 3 3 }T
+T{ s" ~> 0.7"  fsemver.parse-req           -> 0 0 7 0 true }T
+T{ s" >= 1.0"  fsemver.parse-req           -> 2 1 0 0 true }T
+T{ s" garbage" fsemver.parse-req           -> 0 0 0 0 false }T
 
-\ Tolerant of missing components — pad with 0.
-T{ s" 1"       fmix.parse-semver -> 1 0 0 }T
-T{ s" 1.2"     fmix.parse-semver -> 1 2 0 }T
+\ --- Wiring: matcher works after parse-req ------------------------------
+\ self=0.7.4 satisfies ~> 0.7  -> true
+T{  0 7 0 0   0 7 4  fsemver.req-matches? -> true  }T
+\ self=1.0.0 does NOT satisfy ~> 0.7  -> false
+T{  0 7 0 0   1 0 0  fsemver.req-matches? -> false }T
 
-\ Tolerant of garbage — never crashes, just yields some best-effort value.
-T{ s" "        fmix.parse-semver -> 0 0 0 }T
-T{ s" abc"     fmix.parse-semver -> 0 0 0 }T
+\ --- Wiring: fmix-owned state is initialised ----------------------------
 
-\ --- semver-cmp ----------------------------------------------------------
+\ fmix.legacy-self-dep? starts false; this test fixture's package.4th
+\ uses the new `key-value fmix ~> ...` form (or none), so the flag must
+\ NOT have been tripped while scanning the project.
+T{ fmix.legacy-self-dep? @ -> 0 }T
 
-T{ 0 0 0  0 0 0  fmix.semver-cmp ->  0 }T
-T{ 1 2 3  1 2 3  fmix.semver-cmp ->  0 }T
-
-T{ 1 0 0  1 0 1  fmix.semver-cmp -> -1 }T
-T{ 1 0 1  1 0 0  fmix.semver-cmp ->  1 }T
-
-T{ 0 5 0  0 5 1  fmix.semver-cmp -> -1 }T
-T{ 0 5 1  0 5 0  fmix.semver-cmp ->  1 }T
-
-T{ 0 9 9  1 0 0  fmix.semver-cmp -> -1 }T
-T{ 1 0 0  0 9 9  fmix.semver-cmp ->  1 }T
-
-T{ 0 4 0  0 10 0  fmix.semver-cmp -> -1 }T
-T{ 0 10 0  0 4 0  fmix.semver-cmp ->  1 }T
-
-\ Composing parse + cmp for real-world strings.
-T{ s" 0.5.1" fmix.parse-semver s" 0.5.1" fmix.parse-semver fmix.semver-cmp ->  0 }T
-T{ s" 0.5.0" fmix.parse-semver s" 0.5.1" fmix.parse-semver fmix.semver-cmp -> -1 }T
-T{ s" 0.6.0" fmix.parse-semver s" 0.5.1" fmix.parse-semver fmix.semver-cmp ->  1 }T
-T{ s" 1.0.0" fmix.parse-semver s" 0.99.99" fmix.parse-semver fmix.semver-cmp -> 1 }T
+\ fmix.required-fmix-req is a 2variable; it may or may not be populated
+\ depending on the test process's CWD. Just check it's a valid pair
+\ (length is non-negative).
+T{ fmix.required-fmix-req 2@ nip 0>= -> true }T
 
 : report
     #ERRORS @ 0= IF

@@ -7,7 +7,90 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### TODO
+- Fix compatibility with GForth installed via snap (cwd and project path detection).
+
+## [0.7.1] - 2026-05-24
+
 ### Changed
+- **Version-requirement engine extracted to fsemver.** The parser,
+  matcher, semver-cmp and operator constants previously living inline
+  in `fmix_version_check.4th` are now provided by the standalone
+  [fsemver 0.1.0](https://github.com/VitaSound/fsemver) package,
+  vendored under `forth-packages/fsemver/0.1.0/` and declared in
+  `package.4th`. flint 0.2.1 and any future tool (fcov, …) share the
+  same code path now — no more cut-and-paste drift between tools.
+- `fmix_version_check.4th` shrinks from ~230 lines to ~125 (only the
+  project-side `package.4th` mini-parser, the captured requirement
+  string, the error messages, and `fmix.assert-min-version` itself).
+- Operator coverage widens transparently: `>=`, `==`, `>`, `<`, `<=`
+  are accepted in `key-value fmix <req>` in addition to `~>` and bare
+  `X.Y.Z` (these were always going to be a small follow-up; you get
+  them now for free via fsemver).
+
+### Added
+- `forth-packages/fsemver/0.1.0/` — committed vendored copy of fsemver
+  so a fresh `git clone` of fmix runs without first needing to
+  `fmix packages.get` (which would itself require fmix to work).
+- `key-list dependencies fsemver git https://github.com/VitaSound/fsemver tag 0.1.0`
+  in `package.4th` so the dependency is formally tracked and a future
+  `fmix packages.get` can re-pull it.
+
+### Notes
+- No API changes for end users. Projects using
+  `key-value fmix ~> 0.7` (or `~> 0.7.0`, `>= 0.7.0`, etc.) continue
+  to work; legacy `key-list dependencies fmix …` still errors with the
+  same migration hint.
+- `tests/fmix_version_check_test.4th` is now a thin smoke-test (6
+  assertions) that just verifies fsemver is reachable from fmix's load
+  chain. The full 71-case operator truth-table lives in
+  `forth-packages/fsemver/0.1.0/tests/fsemver_test.4th`.
+
+## [0.7.0] - 2026-05-24
+
+### Breaking
+- **Runtime requirement on fmix is no longer expressed as a library
+  dependency.** Pre-0.7.0 the convention was
+  ```
+  key-list dependencies fmix 0.6.0
+  ```
+  which was semantically wrong (fmix is a tool, not a library on
+  theforth.net) and caused `fmix packages.get` to ask theforth.net for
+  a package called `fmix` (HTTP 500). 0.7.0 introduces an Elixir/Hex
+  style runtime key:
+  ```
+  key-value fmix ~> 0.7        \ accepts >=0.7.0  and  <1.0.0
+  key-value fmix ~> 0.7.2      \ accepts >=0.7.2  and  <0.8.0
+  key-value fmix 0.7.0         \ bare, accepts >=0.7.0 (no upper bound)
+  ```
+  Projects still using the old `key-list dependencies fmix …` form are
+  rejected at command entry with a clear migration error pointing at
+  the new syntax. There is no automatic conversion — projects need a
+  one-line edit in `package.4th`.
+
+### Added
+- `fmix_version_check.4th`: requirement parser & matcher.
+  - Operators supported: `~>` (Hex-style "pessimistic", upper bound
+    derived from how many components were given) and bare `X.Y.Z` (=
+    `>= X.Y.Z`, no upper bound).
+  - `fmix.parse-req ( a u -- op ma mi pa valid? )` — parses a
+    requirement string into op + 3-part version + valid? flag.
+  - `fmix.req-matches? ( rma rmi rpa rop  sma smi spa -- f )` —
+    true iff installed self-version satisfies the requirement.
+  - 38 unit tests in `tests/fmix_version_check_test.4th` cover parse
+    success, partials, whitespace, garbage, and the full matcher
+    truth-table for all three operators.
+- `tests/fixtures/{needs_future_fmix,legacy_fmix_dep,bare_fmix_req,invalid_fmix_req,self_dep_only}/`
+  cover the canonical scenarios end-to-end through the bash launcher.
+- `tests/version_check_integration_test.sh` rewritten: 7 OK lines
+  exercising rejection (~> 99.0), legacy form, malformed requirement,
+  and success path.
+
+### Changed
+- `fmix_packages_get.4th`: kept the tool self-dep skip (`fmix`,
+  `flint`, `fcov`) as a silent defense-in-depth — version_check now
+  errors out first, but the skip ensures we *never* attempt to fetch
+  these names from theforth.net even via an unusual codepath.
 - `bin/fmix`: only manipulates the terminal when stdout *is* a tty.
   Previously, when output was captured (`out=$(fmix …)`) the bracketed-
   paste reset escape leaked into the captured string as literal text
@@ -16,22 +99,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `bin/flint` (and any future `bin/fcov`): `$<TOOL>_HOME`,
   `$<TOOL>_CMD`, `$<TOOL>_ARG`. The legacy `FMIX_PARAM` env var is
   still honoured for back-compat.
-- `bin/fmix` header documents the recommended `~/.bashrc` snippet:
-  `export PATH="$HOME/fmix/bin:$HOME/flint/bin:$HOME/fcov/bin:$PATH"`.
+- `bin/fmix` header documents the recommended `~/.bashrc` snippet —
+  one separate `export PATH="$HOME/<tool>/bin:$PATH"` line per tool,
+  so each can be installed / removed independently of the others.
 - `package.4th`: re-ordered to keep mandatory fields first, added
   `tags`, removed commented-out example dependency lines that were
-  noise.
-- README: links into the VitaSound tooling family (flint, ttester,
-  fenum), new `Install` section with `~/.bashrc` snippet.
+  noise. Dropped the old self-pin entry — fmix doesn't pin itself.
+- README / README.ru: new `Install` section with `~/.bashrc` snippet,
+  rewritten version-pinning section explaining `~>` semantics,
+  links into the VitaSound tooling family (flint, ttester, fenum).
 
-### Added
-- `README.ru.md` — full Russian translation of the README.
+### Migration
 
-### TODO
-- Fix compatibility with GForth installed via snap (cwd and project path detection).
-- For `dependencies fmix <ver>` (and future fcov/flint), skip the
-  attempt to fetch from theforth.net — the entry exists purely for the
-  version-check; the actual install is via the bin launcher.
+Old (0.5.x – 0.6.x):
+```forth
+forth-package
+    key-list dependencies fmix 0.6.0
+end-forth-package
+```
+
+New (0.7.0+):
+```forth
+forth-package
+    key-value fmix ~> 0.7
+end-forth-package
+```
 
 ## [0.6.0] - 2026-05-24
 
