@@ -3,10 +3,10 @@
 require fmix_utils.4th
 
 : ttester-project-path ( -- addr u )
-    fmix.project-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join ;
+    fmix.project-path s" forth-packages/ttester/1.2.1/ttester.4th" fmix.fs-join ;
 
 : ttester-fmix-path ( -- addr u )
-    fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join ;
+    fmix.home-path s" forth-packages/ttester/1.2.1/ttester.4th" fmix.fs-join ;
 
 : load-ttester ( -- )
     ttester-project-path

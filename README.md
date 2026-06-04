@@ -261,3 +261,7 @@ gh release create X.Y.Z --title "FMix X.Y.Z" --notes-file .github/RELEASE_NOTES_
 - [x] Tests
 - [ ] Fix compatibility with GForth installed via snap (cwd / project paths)
 - [ ] And more..
+
+## AI assistants
+
+See [AGENTS.md](AGENTS.md) for the VitaSound tool family (fmix, flint, fcov, fsemver, fenum, fmcp) and MCP setup.

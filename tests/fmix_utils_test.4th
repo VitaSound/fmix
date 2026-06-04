@@ -1,7 +1,7 @@
 \ tests/fmix_utils_test.4th
 \ Тестирование базовых функций fmix_utils.4th
 require ../fmix_utils.4th
-fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join required
+fmix.home-path s" forth-packages/ttester/1.2.1/ttester.4th" fmix.fs-join required
 
 \ test fmix.str-concat
 T{ s" abc" s" def" fmix.str-concat s" abcdef" compare -> 0 }T

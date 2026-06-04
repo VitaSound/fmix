@@ -1,0 +1,14 @@
+ttester is in the public domain.
+
+The original `ttester.fs` was released by John Hayes (S1I, Johns Hopkins
+University / Applied Physics Laboratory, 1995) under the following terms:
+
+    (C) 1995 JOHNS HOPKINS UNIVERSITY / APPLIED PHYSICS LABORATORY
+    MAY BE DISTRIBUTED FREELY AS LONG AS THIS COPYRIGHT NOTICE REMAINS.
+
+All subsequent revisions (Anton Ertl, David N. Williams, Krishna Myneni,
+C. G. Montgomery, and the VitaSound ttester-ext additions) have been
+placed in the public domain by their respective authors.
+
+You may use, copy, modify, distribute, and sell this software for any
+purpose, with or without attribution, with no warranty of any kind.

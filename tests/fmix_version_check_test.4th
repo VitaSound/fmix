@@ -18,7 +18,7 @@ require ../fmix_utils.4th
 require ../fmix_version.4th
 require ../fmix_version_check.4th
 
-fmix.home-path s" forth-packages/ttester/1.1.0/ttester.4th" fmix.fs-join required
+fmix.home-path s" forth-packages/ttester/1.2.1/ttester.4th" fmix.fs-join required
 
 0 #ERRORS !
 

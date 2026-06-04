@@ -12,6 +12,6 @@ forth-package
     key-list tags test-runner
     key-list tags gforth
     key-list dependencies fsemver git https://github.com/VitaSound/fsemver tag 0.1.0
-    key-list dependencies ttester 1.1.0
+    key-list dependencies ttester git https://github.com/VitaSound/ttester tag 1.2.1
     key-list dependencies f 0.2.4
 end-forth-package

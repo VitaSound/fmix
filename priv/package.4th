@@ -1,18 +1,18 @@
+\ Follows theforth.net publishing guidelines:
+\   https://theforth.net/guidelines
 forth-package
     key-value name <name>
     key-value version 0.1.0
     key-value license COPL
     key-value description <name>
     key-value main <name>.4th
-    \ packages from git
-    \ key-list dependencies <package_name> git <http-url> [branch|tag] <name>
-    \ key-list dependencies ftest git https://github.com/VitaSound/ftest.git tag 0.1.0
-    \ key-list dependencies ftest git https://github.com/VitaSound/ftest.git branch main
-    \ packages from theforth.net
-    \ key-list dependencies <package_name> <version>
-    \ key-list dependencies base64 1.0.0
-    \ key-list dependencies f 0.2.4
-    \ key-list dependencies ttester 1.1.0
+    \ VitaSound runtime tools (pin to your installed versions)
+    key-value fmix ~> 0.7
+    key-value flint ~> 0.2
+    key-value fcov ~> 0.3
+    key-list tags gforth
+    key-list dependencies fsemver git https://github.com/VitaSound/fsemver tag 0.1.0
+    key-list dependencies fenum git https://github.com/VitaSound/fenum tag 0.1.1
+    key-list dependencies ttester git https://github.com/VitaSound/ttester tag 1.2.1
     key-list dependencies f git https://github.com/VitaSound/f tag 0.2.4
-    key-list dependencies ttester git https://github.com/VitaSound/ttester tag 1.1.0
 end-forth-package

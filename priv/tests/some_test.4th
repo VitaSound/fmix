@@ -1,6 +1,9 @@
-require ../forth-packages/ttester/1.1.0/ttester.4th
+\ tests/some_test.4th — ttester sanity (fmix scaffold).
 
-\ see examples:
-\ https://forth-standard.org/standard/testsuite
+require ../forth-packages/ttester/1.2.1/ttester.4th
+
+0 #ERRORS !
 
 T{ 1 2 3 SWAP -> 1 3 2 }T
+
+#ERRORS @ 0= [IF] ." some_test OK" cr [ELSE] ." some_test FAILED" cr [THEN]
