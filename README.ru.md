@@ -38,27 +38,22 @@ Forth](https://github.com/VitaSound): fmix (этот инструмент),
 cd ~ && git clone git@github.com:VitaSound/fmix.git
 ```
 
-В `~/.bashrc` (или `~/.zshrc`) — по одной строке на каждый
-инструмент, чтобы они оставались независимы (установить/удалить любой
-можно отдельно):
+## Настройка shell
+
+В `~/.bashrc` (или `~/.zshrc`) — **две строки только для этого инструмента** (конвенция VitaSound: один инструмент — одна пара строк PATH; не объединять с соседями):
 
 ```bash
-export PATH="$HOME/fmix/bin:$PATH"
+export FMIX_HOME="<install-dir>/fmix"
+export PATH="$FMIX_HOME/bin:$PATH"
 ```
 
-(для соседних инструментов добавляйте свои строки:
-`export PATH="$HOME/flint/bin:$PATH"`,
-`export PATH="$HOME/fcov/bin:$PATH"` и т. п.)
+`<install-dir>` — родитель клонов (`$HOME` при feco в `~/feco`, или например `/opt/vitasound` для изолированного окружения). Массовая установка и готовый snippet: [VitaSound/feco](https://github.com/VitaSound/feco) — `./scripts/clone-ecosystem.sh`. Канон: [feco shell setup](https://github.com/VitaSound/feco/blob/main/docs/shell-setup.ru.md).
 
-Если fmix лежит не в `$HOME/fmix`, экспортируйте `$FMIX_HOME` перед
-вызовом.
+Затем `source ~/.bashrc` и `fmix version`.
 
-Проверка:
+**Не** используйте `alias fmix='gforth "$FMIX_HOME/fmix.4th" -e'` — только лаунчер `bin/fmix`.
 
-```bash
-source ~/.bashrc
-fmix version
-```
+Соседние CLI (flint, fcov, fmcp, fhdlgen) — свои пары строк: [feco shell setup](https://github.com/VitaSound/feco/blob/main/docs/shell-setup.ru.md).
 
 ## Привязка версии fmix (`key-value fmix ~> X.Y`)
 

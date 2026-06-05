@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
+- Rename default branch `master` → `main` (align with rest of VitaSound ecosystem; update CI, docs, clone URLs).
 
 ## [0.7.2] - 2026-05-24
 

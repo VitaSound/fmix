@@ -17,18 +17,22 @@ fmix (this tool), [flint](https://github.com/VitaSound/flint) (linter),
 cd ~ && git clone git@github.com:VitaSound/fmix.git
 ```
 
-Add to your `~/.bashrc` (or `~/.zshrc`) — one line per tool so each
-stays independent (install/remove without touching the rest):
+## Shell setup
+
+Add to `~/.bashrc` (or `~/.zshrc`) — **two lines for this tool only** (VitaSound convention: one tool per PATH line; do not merge with siblings):
 
 ```bash
-export PATH="$HOME/fmix/bin:$PATH"
+export FMIX_HOME="<install-dir>/fmix"
+export PATH="$FMIX_HOME/bin:$PATH"
 ```
 
-(sibling tools get their own lines: `export PATH="$HOME/flint/bin:$PATH"`,
-`export PATH="$HOME/fcov/bin:$PATH"`, etc.)
+`<install-dir>` is the parent of your clones (`$HOME` if you cloned beside `~/feco`, or e.g. `/opt/vitasound` for an isolated workspace). To install the whole ecosystem and print a ready snippet: [VitaSound/feco](https://github.com/VitaSound/feco) — `./scripts/clone-ecosystem.sh`. Canonical rules: [feco shell setup](https://github.com/VitaSound/feco/blob/main/docs/shell-setup.md).
 
-If you keep fmix somewhere other than `$HOME/fmix`, set `$FMIX_HOME`
-before invoking `fmix` (the launcher honours it).
+Then `source ~/.bashrc` and run `fmix version`.
+
+**Do not** use `alias fmix='gforth "$FMIX_HOME/fmix.4th" -e'` — use the `bin/fmix` launcher.
+
+Sibling CLI tools (flint, fcov, fmcp, fhdlgen) each need their own two-line block — see [feco shell setup](https://github.com/VitaSound/feco/blob/main/docs/shell-setup.md).
 
 ```bash
 $ fmix
