@@ -1,5 +1,7 @@
 build/
 .fcov/
+.fmcp/
+forth-packages/**/.git/
 *.swp
 *.swo
 .DS_Store
