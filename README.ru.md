@@ -3,7 +3,8 @@
 [English version](README.md)
 
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.6.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.6.0)
+[![Ver](https://img.shields.io/badge/Ver-0.7.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.7.3)
+[![Cov](https://img.shields.io/badge/Cov-75%25-green.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
 
 FMix — это сборочный инструмент, который умеет создавать пакеты,
 устанавливать зависимости, запускать тесты и проверять минимальную

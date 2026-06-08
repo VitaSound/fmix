@@ -1,6 +1,7 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.6.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.6.0)
+[![Ver](https://img.shields.io/badge/Ver-0.7.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.7.3)
+[![Cov](https://img.shields.io/badge/Cov-75%25-green.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
 
 [Русская версия](README.ru.md)
 
@@ -233,19 +234,21 @@ context for AI assistants helping with the repo.
    `.github/RELEASE_NOTES_X.Y.Z.md` — copy the changelog section for that version
    (GitHub Release body is taken from this file).
 4. **Bump version** in `package.4th` (`key-value version X.Y.Z`) and in `README.md`
-   (badge URL and `FMix vX.Y.Z` in the help example).
-5. **Commit and push** to `origin/master`:
+   (Ver badge URL and `FMix vX.Y.Z` in the help example).
+5. **Update Cov badge** in `README.md` and `README.ru.md` after `fcov run fmix test`
+   (percentage and shields.io color from the report).
+6. **Commit and push** to `origin/master`:
    ```bash
    git add -A
    git commit -m "Release X.Y.Z."
    git push origin master
    ```
-6. **Create and push an annotated tag** (triggers [Publish Release](.github/workflows/release.yml)):
+7. **Create and push an annotated tag** (triggers [Publish Release](.github/workflows/release.yml)):
    ```bash
    git tag -a X.Y.Z -m "FMix X.Y.Z"
    git push origin X.Y.Z
    ```
-7. **Verify**: [Actions → Publish Release](https://github.com/VitaSound/fmix/actions/workflows/release.yml)
+8. **Verify**: [Actions → Publish Release](https://github.com/VitaSound/fmix/actions/workflows/release.yml)
    should succeed; check [Releases](https://github.com/VitaSound/fmix/releases).
 
 If the workflow fails with `Missing .github/RELEASE_NOTES_X.Y.Z.md`, add that file

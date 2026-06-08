@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 - Rename default branch `master` → `main` (align with rest of VitaSound ecosystem; update CI, docs, clone URLs).
 
+## [0.7.3] - 2026-06-08
+
+### Added
+- `tests/fmix_integration_test.4th` — fcov-visible integration (version-check
+  fixtures, `packages.get` self-dep, `fmix new`, `fmix version`) raising
+  definition coverage from ~44 % to ~75 % under `fcov run fmix test`.
+- `.github/scripts/update-cov-badge.sh` — refresh Cov shields.io URLs from
+  `fcov report --format json`.
+- Cov badge in `README.md` / `README.ru.md`; Releasing checklist step for
+  updating the badge after coverage runs.
+
+### Changed
+- CI: checkout fcov 0.3.0, run `fcov run` after tests, update Cov badge in
+  README when coverage drifts.
+
 ## [0.7.2] - 2026-05-24
 
 ### Added

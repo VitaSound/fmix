@@ -32,3 +32,18 @@ jobs:
 
       - name: fmix test
         run: FMIX_CMD=test gforth fmix.4th
+
+      - uses: actions/checkout@v4
+        with:
+          repository: VitaSound/fcov
+          ref: '0.3.0'
+          path: fcov
+
+      - name: Definition coverage
+        env:
+          FCOV_HOME: ${{ github.workspace }}/fcov
+          PATH: ${{ github.workspace }}/fcov/bin:${{ env.PATH }}
+        run: |
+          fcov run env FMIX_CMD=test gforth fmix.4th
+          pct=$(fcov report --format json | jq -r '.summary.coverage_pct')
+          bash .github/scripts/update-cov-badge.sh . "$pct"
