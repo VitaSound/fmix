@@ -1,62 +1,72 @@
-# FMix and VitaSound Forth tooling (AI context)
+# fmix — agent instructions
 
-**Dialect:** Gforth ≥ 0.7.9. Forth style and stack rules: sibling repo [frules](../frules) (`AGENTS.md`, `rules/*.mdc`). Install into a project with `../frules/install.sh <project> gforth` when editing `.4th` sources.
+Forth package/build tool: scaffolding, dependency fetching, test runner. Umbrella for the VitaSound Forth toolchain ([feco](https://github.com/VitaSound/feco) catalog, [frules](https://github.com/VitaSound/frules) for coding rules).
 
-## Ecosystem tools (console utilities)
+Related tools: **flint** (lint), **fcov** (coverage), **fsemver** (version pins), **fmcp** (MCP bridge).
 
-All are **CLI + Gforth**, launched via `bin/<tool>` with `$<TOOL>_HOME` (default `$HOME/<tool>`) and `$<TOOL>_CMD` / `$<TOOL>_ARG` env vars. Do **not** invent ad-hoc `gforth -e` build flows when these tools apply.
+## Before commit
 
-| Tool | Repo | Role |
-|------|------|------|
-| **fmix** | [fmix](https://github.com/VitaSound/fmix) | Package scaffold (`fmix new`), deps (`fmix packages.get`), tests (`fmix test`) |
-| **flint** | [flint](https://github.com/VitaSound/flint) | Lint duplicate `: word` defs across `.4th` trees; **exit code always 0** — scan output for `[WARN]` |
-| **fcov** | [fcov](https://github.com/VitaSound/fcov) | Coverage: `fcov run` then `fcov report` (`--format json` for machines) |
-| **fmcp** | [fmcp](https://github.com/VitaSound/fmcp) | MCP stdio bridge (`fmcp serve`) exposing fmix/flint/fcov to Cursor |
-| **fjson** | [fjson](https://github.com/VitaSound/fjson) | Minimal JSON write + read-lite for MCP NDJSON (`fjson.key-string`, `fjson.emit`, …) |
-| **fsemver** | [fsemver](https://github.com/VitaSound/fsemver) | Semver matching for `key-value fmix ~> X.Y` pins (vendored or git dep) |
-| **fenum** | [fenum](https://github.com/VitaSound/fenum) | Generic container/list helpers (used by flint, others) |
+After editing `.4th` files, run this sequence **before creating a git commit**:
 
-Related: [ttester](https://github.com/VitaSound/ttester) (tests), [f](https://github.com/VitaSound/f) (compat layer).
+1. **`fmix test`** — unit tests must pass.
+2. **`flint`** — duplicate-word lint across project sources and `forth-packages/`.
+3. **`fcov run fmix test`** then **`fcov report`** — definition coverage during tests.
 
-## Typical workflow in a Forth package
+### flint
 
-1. `fmix packages.get` — fetch `forth-packages/` from `package.4th`
-2. `flint` — optional duplicate-definition pass
-3. `fmix test` — `*_test.4th` under `tests/`
-4. `fcov run` / `fcov report` — when coverage is requested
+- **Role:** scans all `*.4th` under the repo; reports duplicate `: word` definitions (including vendored deps).
+- **Exit code:** always 0 (warn-only tool).
+- **Agent rule:** read output for `[WARN]` lines; do not commit new duplicate definitions in **project** code. Warnings inside `forth-packages/` are often expected — note them, fix only if this repo owns the duplicate.
+- **Version pin:** `key-value flint ~> 0.2` in `package.4th` (mismatch → `[WARN]`, lint still runs).
 
-## `package.4th` conventions
+Shell: `flint` from repo root (needs `flint` on `PATH`, see [flint](https://github.com/VitaSound/flint)).
 
-- Pin runtime tools: `key-value fmix ~> 0.7`, `key-value flint ~> 0.2`, `key-value fcov ~> 0.3`
-- Library deps: `key-list dependencies <name> git <url> tag <ver>`
-- `fmix new` scaffolds defaults (fmix/flint/fcov pins + fsemver, fenum, ttester, f)
+### fcov
 
-## MCP (Cursor)
+- **Role:** instruments word definitions, runs tests, writes `.fcov/coverage.json` and console report.
+- **Command:** `fcov run fmix test` then `fcov report` (or `fcov report --format json`).
+- **Agent rule:** tests must pass under fcov; review coverage % and uncovered project words when changing public API.
+- **Version pin:** `key-value fcov ~> 0.3` in `package.4th`.
+- **Artifacts:** `.fcov/` is gitignored — never commit it.
 
-Configure stdio server **fmcp** (not embedded in fmix/flint/fcov):
+Shell: `fcov` from repo root (needs `fcov` on `PATH`, see [fcov](https://github.com/VitaSound/fcov)).
 
-```json
-{
-  "mcpServers": {
-    "vitasound-forth": {
-      "command": "fmcp",
-      "args": ["serve"],
-      "env": {
-        "FMIX_HOME": "/path/to/fmix",
-        "FLINT_HOME": "/path/to/flint",
-        "FCOV_HOME": "/path/to/fcov",
-        "PATH": "/path/to/fmix/bin:/path/to/flint/bin:/path/to/fcov/bin:/path/to/fmcp/bin:..."
-      }
-    }
-  }
-}
+### MCP equivalents (preferred)
+
+| Step | MCP tool |
+|------|----------|
+| Tests | `fmix_test` |
+| Lint | `flint_lint` |
+| Coverage | `fcov_run` (`test_command`: `fmix test`) → `fcov_report` |
+
+Do **not** skip flint/fcov before commit when MCP **vitasound-forth** is connected.
+
+## Quality workflow
+
+```text
+fmix packages.get   # if package.4th or deps changed
+fmix test
+flint
+fcov run fmix test && fcov report
 ```
 
-Use MCP tools from fmcp when available; otherwise the same commands in the shell from the package root.
+MCP order: `fmix_packages_get` → `fmix_test` → `flint_lint` → `fcov_run` → `fcov_report`.
 
-## This repo (fmix)
+## MCP (preferred for agents)
 
-- Entry: `fmix.4th`, launcher `bin/fmix`
-- Templates for `fmix new`: `priv/`
-- Tests: `fmix test`, shell integration under `tests/`
-- Releasing: see README § Releasing
+Cursor MCP server: **`vitasound-forth`** (stdio bridge: [fmcp](https://github.com/VitaSound/fmcp)).
+
+Use MCP tools instead of shell when the server is connected (Settings → MCP → vitasound-forth).
+
+| MCP tool | Task |
+|----------|------|
+| `fmix_packages_get` | `forth-packages/` after clone or deps change |
+| `fmix_test` | unit tests (step 1 before commit) |
+| `flint_lint` | duplicate-word lint (step 2 before commit) |
+| `fcov_run` / `fcov_report` | coverage (step 3 before commit) |
+| `mcp_ping` | health check between batch calls |
+
+`project_root` = absolute path to **this** repo (e.g. `/home/sea/fmix`).
+
+Full tool list, batch tips, troubleshooting: [fmcp/AGENTS.md](https://github.com/VitaSound/fmcp/blob/main/AGENTS.md).  
+`mcp.json` setup: [fmcp/README.md](https://github.com/VitaSound/fmcp/blob/main/README.md#cursor-mcpjson).

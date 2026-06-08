@@ -4,6 +4,7 @@ forth-package
     key-value description Forth package/build tool (project scaffolding, dependency fetching, test runner)
     key-value license COPL
     key-value main fmix.4th
+    key-value flint ~> 0.2
     key-value fcov ~> 0.3
     key-list fcov-exclude priv
     key-list fcov-exclude tests/fixtures
