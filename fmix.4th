@@ -7,6 +7,8 @@ require fmix_version_check.4th
 require fmix_new.4th
 require fmix_packages_get.4th
 require fmix_test.4th
+require fmix_check.4th
+require fmix_hook.4th
 
 : fmix.help
     cr 
@@ -21,6 +23,8 @@ require fmix_test.4th
     s"                                                --isolated (default): each test" type cr
     s"                                                in a fresh gforth process." type cr
     s"                                                --shared: single session for all." type cr
+    s"    check [--stage pre-commit|pre-push|all]   - Quality gate (test/flint/fcov)" type cr
+    s"    hook install|uninstall [--stage ...]      - Install git hooks for check" type cr
     s"    version                                   - Show version" type cr cr
 ;
 
@@ -47,6 +51,10 @@ require fmix_test.4th
             fmix.packages.get
         ELSE fmix.cmd-arg 2@ s" test" compare 0= IF
             fmix.test
+        ELSE fmix.cmd-arg 2@ s" check" compare 0= IF
+            fmix.check
+        ELSE fmix.cmd-arg 2@ s" hook" compare 0= IF
+            fmix.hook
         ELSE fmix.cmd-arg 2@ s" version" compare 0= IF
             fmix.version
         ELSE fmix.cmd-arg 2@ s" help" compare 0= IF
@@ -54,7 +62,7 @@ require fmix_test.4th
         ELSE
             s" Unknown command: " type fmix.cmd-arg 2@ type cr
             fmix.help
-        THEN THEN THEN THEN THEN
+        THEN THEN THEN THEN THEN THEN THEN
     THEN
     fmix.restore-terminal
     0 bye ;

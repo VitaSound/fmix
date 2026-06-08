@@ -9,7 +9,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
-- Rename default branch `master` → `main` (align with rest of VitaSound ecosystem; update CI, docs, clone URLs).
+
+## [0.8.0] - 2026-06-08
+
+### Added
+- **`fmix check`** — quality gate with stages `pre-commit` (test + flint),
+  `pre-push` (+ fcov), and `all`; flags `--no-flint`, `--no-fcov`,
+  `--fail-under N`.
+- **`fmix hook install|uninstall`** — git hooks calling `fmix check`;
+  idempotent install; uninstall only removes hooks with `# vitasound-fmix-hook`.
+- `fmix_check.4th`, `fmix_check_config.4th`, `fmix_hook.4th`; hook templates
+  under `priv/hooks/`.
+- Tests: `fmix_check_test.4th`, `fmix_hook_test.4th`,
+  `check_integration_test.sh`.
+- Scaffold: Quality section in `priv/README.md`; commented `package.4th`
+  examples for check config.
+
+### Changed
+- `package.4th`: version **0.8.0**; pin `flint ~> 0.3`.
+- CI: triggers only on `main`; smoke `fmix check --no-flint --no-fcov`.
+- Default branch is **`main`** (migration complete).
 
 ## [0.7.3] - 2026-06-08
 

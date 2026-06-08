@@ -6,67 +6,66 @@ Related tools: **flint** (lint), **fcov** (coverage), **fsemver** (version pins)
 
 ## Before commit
 
-After editing `.4th` files, run this sequence **before creating a git commit**:
+Use **`fmix check`** (or git hooks via **`fmix hook install`**) instead of running test/flint/fcov manually.
 
-1. **`fmix test`** — unit tests must pass.
-2. **`flint`** — duplicate-word lint across project sources and `forth-packages/`.
-3. **`fcov run fmix test`** then **`fcov report`** — definition coverage during tests.
+| Stage | Steps |
+|-------|-------|
+| `pre-commit` | `fmix test`; `flint lint . --strict --project-only` |
+| `pre-push` | above + `fcov run fmix test --strict`; `fcov report --fail-under N` (optional) |
+
+```bash
+fmix check --stage pre-commit
+fmix check --stage pre-push --fail-under 40   # optional threshold
+fmix hook install --stage all
+```
+
+Requires **flint** and **fcov** on `PATH` (`FLINT_HOME`, `FCOV_HOME`). Missing tool → exit 1 with `[ERROR]`.
 
 ### flint
 
-- **Role:** scans all `*.4th` under the repo; reports duplicate `: word` definitions (including vendored deps).
-- **Exit code:** always 0 (warn-only tool).
-- **Agent rule:** read output for `[WARN]` lines; do not commit new duplicate definitions in **project** code. Warnings inside `forth-packages/` are often expected — note them, fix only if this repo owns the duplicate.
-- **Version pin:** `key-value flint ~> 0.2` in `package.4th` (mismatch → `[WARN]`, lint still runs).
-
-Shell: `flint` from repo root (needs `flint` on `PATH`, see [flint](https://github.com/VitaSound/flint)).
+- **Role:** duplicate `: word` scan; `--strict` → exit 1 on warnings; `--project-only` skips `forth-packages/`.
+- **Default (no flags):** warn-only, exit 0.
+- **Version pin:** `key-value flint ~> 0.3` in `package.4th`.
 
 ### fcov
 
-- **Role:** instruments word definitions, runs tests, writes `.fcov/coverage.json` and console report.
-- **Command:** `fcov run fmix test` then `fcov report` (or `fcov report --format json`).
-- **Agent rule:** tests must pass under fcov; review coverage % and uncovered project words when changing public API.
+- **Role:** definition coverage during tests; `run --strict` propagates test failure; `report --fail-under` enforces threshold.
 - **Version pin:** `key-value fcov ~> 0.3` in `package.4th`.
-- **Artifacts:** `.fcov/` is gitignored — never commit it.
-
-Shell: `fcov` from repo root (needs `fcov` on `PATH`, see [fcov](https://github.com/VitaSound/fcov)).
+- **Artifacts:** `.fcov/` is gitignored.
 
 ### MCP equivalents (preferred)
 
 | Step | MCP tool |
 |------|----------|
-| Tests | `fmix_test` |
-| Lint | `flint_lint` |
-| Coverage | `fcov_run` (`test_command`: `fmix test`) → `fcov_report` |
+| Full gate | `fmix_check` (`stage`, optional `fail_under`, `no_flint`, `no_fcov`) |
+| Tests only | `fmix_test` |
+| Lint only | `flint_lint` (optional `strict`, `project_only`) |
+| Coverage | `fcov_run` → `fcov_report` |
 
-Do **not** skip flint/fcov before commit when MCP **vitasound-forth** is connected.
+Do **not** skip the quality gate before commit when MCP **vitasound-forth** is connected.
 
 ## Quality workflow
 
 ```text
 fmix packages.get   # if package.4th or deps changed
-fmix test
-flint
-fcov run fmix test && fcov report
+fmix check --stage all
 ```
 
-MCP order: `fmix_packages_get` → `fmix_test` → `flint_lint` → `fcov_run` → `fcov_report`.
+MCP: `fmix_packages_get` → `fmix_check` (or `fmix_test` + `flint_lint` + `fcov_run`).
 
 ## MCP (preferred for agents)
 
 Cursor MCP server: **`vitasound-forth`** (stdio bridge: [fmcp](https://github.com/VitaSound/fmcp)).
 
-Use MCP tools instead of shell when the server is connected (Settings → MCP → vitasound-forth).
-
 | MCP tool | Task |
 |----------|------|
+| `fmix_check` | quality gate (preferred before commit) |
 | `fmix_packages_get` | `forth-packages/` after clone or deps change |
-| `fmix_test` | unit tests (step 1 before commit) |
-| `flint_lint` | duplicate-word lint (step 2 before commit) |
-| `fcov_run` / `fcov_report` | coverage (step 3 before commit) |
+| `fmix_test` | unit tests only |
+| `flint_lint` | lint only (`strict`, `project_only` optional) |
+| `fcov_run` / `fcov_report` | coverage only |
 | `mcp_ping` | health check between batch calls |
 
 `project_root` = absolute path to **this** repo (e.g. `/home/sea/fmix`).
 
-Full tool list, batch tips, troubleshooting: [fmcp/AGENTS.md](https://github.com/VitaSound/fmcp/blob/main/AGENTS.md).  
-`mcp.json` setup: [fmcp/README.md](https://github.com/VitaSound/fmcp/blob/main/README.md#cursor-mcpjson).
+Full tool list: [fmcp/AGENTS.md](https://github.com/VitaSound/fmcp/blob/main/AGENTS.md).

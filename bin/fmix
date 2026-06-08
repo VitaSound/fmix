@@ -67,8 +67,62 @@ else
             esac
         done
         export FMIX_TEST_ISOLATED
+    elif [ "$FMIX_CMD" = "check" ]; then
+        FMIX_CHECK_STAGE=${FMIX_CHECK_STAGE:-pre-commit}
+        FMIX_CHECK_NO_FLINT=${FMIX_CHECK_NO_FLINT:-0}
+        FMIX_CHECK_NO_FCOV=${FMIX_CHECK_NO_FCOV:-0}
+        FMIX_CHECK_FAIL_UNDER=${FMIX_CHECK_FAIL_UNDER:-}
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --stage)
+                    shift
+                    [ $# -gt 0 ] || { echo "[ERROR] --stage requires a value" >&2; exit 1; }
+                    FMIX_CHECK_STAGE=$1
+                    shift
+                    ;;
+                --no-flint) FMIX_CHECK_NO_FLINT=1; shift ;;
+                --no-fcov)  FMIX_CHECK_NO_FCOV=1; shift ;;
+                --fail-under)
+                    shift
+                    [ $# -gt 0 ] || { echo "[ERROR] --fail-under requires a number" >&2; exit 1; }
+                    FMIX_CHECK_FAIL_UNDER=$1
+                    shift
+                    ;;
+                --) shift; break ;;
+                --*)
+                    echo "[ERROR] Unknown check flag: $1" >&2
+                    exit 1
+                    ;;
+                *) break ;;
+            esac
+        done
+        FMIX_ARG=
+        export FMIX_CHECK_STAGE FMIX_CHECK_NO_FLINT FMIX_CHECK_NO_FCOV FMIX_CHECK_FAIL_UNDER FMIX_ARG
+    elif [ "$FMIX_CMD" = "hook" ]; then
+        FMIX_HOOK_STAGE=${FMIX_HOOK_STAGE:-pre-commit}
+        FMIX_ARG=${1:-}
+        [ $# -gt 0 ] && shift
+        while [ $# -gt 0 ]; do
+            case "$1" in
+                --stage)
+                    shift
+                    [ $# -gt 0 ] || { echo "[ERROR] --stage requires a value" >&2; exit 1; }
+                    FMIX_HOOK_STAGE=$1
+                    shift
+                    ;;
+                --) shift; break ;;
+                --*)
+                    echo "[ERROR] Unknown hook flag: $1" >&2
+                    exit 1
+                    ;;
+                *) break ;;
+            esac
+        done
+        export FMIX_HOOK_STAGE
+    else
+        FMIX_ARG=$*
     fi
-    FMIX_ARG=$*
+    [ "$FMIX_CMD" = "hook" ] || [ "$FMIX_CMD" = "check" ] || FMIX_ARG=$*
 fi
 export FMIX_HOME FMIX_CMD FMIX_ARG
 

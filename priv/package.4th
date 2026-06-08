@@ -10,6 +10,10 @@ forth-package
     key-value fmix ~> 0.7
     key-value flint ~> 0.2
     key-value fcov ~> 0.3
+    \ Optional quality gate config (fmix check reads these when uncommented):
+    \ key-list fmix-check-pre-commit test flint
+    \ key-list fmix-check-pre-push test flint fcov
+    \ key-value fcov-fail-under 40
     key-list tags gforth
     key-list dependencies fsemver git https://github.com/VitaSound/fsemver tag 0.1.0
     key-list dependencies fenum git https://github.com/VitaSound/fenum tag 0.1.1

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# vitasound-fmix-hook
+set -euo pipefail
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+: "${FMIX_HOME:=$HOME/fmix}"
+exec "$FMIX_HOME/bin/fmix" check --stage pre-push

@@ -1,6 +1,6 @@
 # fmix
-[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.7.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.7.3)
+[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/main/LICENSE)
+[![Ver](https://img.shields.io/badge/Ver-0.8.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.8.0)
 [![Cov](https://img.shields.io/badge/Cov-75%25-green.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
 
 [Русская версия](README.ru.md)
@@ -48,6 +48,8 @@ Commands:
                                                --isolated (default): each test
                                                in a fresh gforth process.
                                                --shared: single session for all.
+   check [--stage pre-commit|pre-push|all]   - Quality gate (test/flint/fcov)
+   hook install|uninstall [--stage ...]      - Install git hooks for check
    version                                   - Show version
 ```
 
@@ -212,6 +214,13 @@ Run tests
   fmix test
 ```
 
+Quality gate (requires [flint](https://github.com/VitaSound/flint) and [fcov](https://github.com/VitaSound/fcov) on `PATH`):
+
+```bash
+  fmix check --stage all
+  fmix hook install --stage all
+```
+
 # Depends
 
 GForth 0.7.9, linux, git, sed, cp.
@@ -227,7 +236,7 @@ under `~/opt/gforth-0.7.9`, or a tarball install.
 Checklist for a new version (e.g. `0.4.4`). Intended as maintainer notes and as
 context for AI assistants helping with the repo.
 
-1. **Implement changes** on `master` (features, fixes, docs).
+1. **Implement changes** on `main` (features, fixes, docs).
 2. **Update `CHANGELOG.md`**: move items from `[Unreleased]` into a new section
    `## [X.Y.Z] - YYYY-MM-DD`.
 3. **Add release notes file**  
@@ -237,11 +246,11 @@ context for AI assistants helping with the repo.
    (Ver badge URL and `FMix vX.Y.Z` in the help example).
 5. **Update Cov badge** in `README.md` and `README.ru.md` after `fcov run fmix test`
    (percentage and shields.io color from the report).
-6. **Commit and push** to `origin/master`:
+6. **Commit and push** to `origin/main`:
    ```bash
    git add -A
    git commit -m "Release X.Y.Z."
-   git push origin master
+   git push origin main
    ```
 7. **Create and push an annotated tag** (triggers [Publish Release](.github/workflows/release.yml)):
    ```bash
@@ -252,7 +261,7 @@ context for AI assistants helping with the repo.
    should succeed; check [Releases](https://github.com/VitaSound/fmix/releases).
 
 If the workflow fails with `Missing .github/RELEASE_NOTES_X.Y.Z.md`, add that file
-on `master`, push, then re-run the workflow manually (**Run workflow**, enter the tag)
+on `main`, push, then re-run the workflow manually (**Run workflow**, enter the tag)
 or delete and re-push the tag (only if the release was not published yet).
 
 Manual fallback (no tag hook):
@@ -266,6 +275,7 @@ gh release create X.Y.Z --title "FMix X.Y.Z" --notes-file .github/RELEASE_NOTES_
 - [x] Create package
 - [x] Get dependecies
 - [x] Tests
+- [x] Quality gate (`fmix check`, `fmix hook install`)
 - [ ] Fix compatibility with GForth installed via snap (cwd / project paths)
 - [ ] And more..
 

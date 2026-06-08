@@ -2,8 +2,8 @@
 
 [English version](README.md)
 
-[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/master/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.7.3-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.7.3)
+[![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/main/LICENSE)
+[![Ver](https://img.shields.io/badge/Ver-0.8.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.8.0)
 [![Cov](https://img.shields.io/badge/Cov-75%25-green.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
 
 FMix — это сборочный инструмент, который умеет создавать пакеты,
@@ -24,6 +24,8 @@ Commands:
                                                каждый тест в отдельном
                                                процессе gforth.
                                                --shared: всё в одной сессии.
+   check [--stage pre-commit|pre-push|all]   - Quality gate (test/flint/fcov)
+   hook install|uninstall [--stage ...]      - Git-хуки для check
    version                                   - Версия
 ```
 
@@ -119,6 +121,15 @@ key-list dependencies fmix 0.6.0
 `fmix test --shared` — полезно когда нужно специально ловить
 кросс-тестовые утечки (например, `project-drop` забывает освободить
 список).
+
+## Quality gate
+
+Полный цикл перед push (нужны [flint](https://github.com/VitaSound/flint) и [fcov](https://github.com/VitaSound/fcov) в `PATH`):
+
+```bash
+fmix check --stage all
+fmix hook install --stage all
+```
 
 ## Публикация на theforth.net
 
