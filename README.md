@@ -11,6 +11,9 @@ Part of the [VitaSound Forth tooling family](https://github.com/VitaSound):
 fmix (this tool), [flint](https://github.com/VitaSound/flint) (linter),
 [ttester](https://github.com/VitaSound/ttester) (testing utility),
 [fenum](https://github.com/VitaSound/fenum) (universal containers).
+Catalog of the whole ecosystem with versions and coverage:
+[feco](https://github.com/VitaSound/feco); engineering methodology and
+task decomposition: [MIT](https://github.com/VitaSound/MIT).
 
 ## Install
 

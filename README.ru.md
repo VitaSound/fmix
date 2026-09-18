@@ -34,6 +34,9 @@ Forth](https://github.com/VitaSound): fmix (этот инструмент),
 [flint](https://github.com/VitaSound/flint) (линтер),
 [ttester](https://github.com/VitaSound/ttester) (тестовая утилита),
 [fenum](https://github.com/VitaSound/fenum) (универсальные контейнеры).
+Каталог всей экосистемы с версиями и покрытием:
+[feco](https://github.com/VitaSound/feco); инженерная методология и
+декомпозиция задач: [MIT](https://github.com/VitaSound/MIT).
 
 ## Установка
 
