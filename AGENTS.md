@@ -69,3 +69,7 @@ Cursor MCP server: **`vitasound-forth`** (stdio bridge: [fmcp](https://github.co
 `project_root` = absolute path to **this** repo (e.g. `/home/sea/fmix`).
 
 Full tool list: [fmcp/AGENTS.md](https://github.com/VitaSound/fmcp/blob/main/AGENTS.md).
+
+## Planning changes: OpenSpec
+
+Plan non-trivial changes with [OpenSpec](https://github.com/Fission-AI/OpenSpec) in [`openspec/`](openspec/): `/opsx-explore` → `/opsx-propose <name>` → `/opsx-apply` → `/opsx-archive` (Cursor). Context and rules: [`openspec/config.yaml`](openspec/config.yaml). Write specs only for the change at hand; the quality workflow above still applies.

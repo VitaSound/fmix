@@ -1,0 +1,24 @@
+schema: spec-driven
+
+context: |
+  Language: Russian
+  All artifacts must be written in Russian.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  Проект: fmix — сборщик, пакетный менеджер и тест-раннер для Forth (fmix new, packages.get, test, check), центр экосистемы VitaSound feco.
+  Правила агента: AGENTS.md (контекст всего тулчейна). Стек: Gforth, правила frules (.cursor/rules), package.4th.
+  Зависимости: fsemver, fjson и др. (forth-packages/). Интеграция: flint, fcov (fmix check), fmcp (MCP-обёртка).
+  Проверка: fmix test, flint, fcov run && fcov report, интеграционные tests/*.sh; из Cursor — MCP vitasound-forth.
+
+rules:
+  specs:
+    - Спеки описывают поведение CLI-команд fmix (аргументы, файлы, коды возврата, вывод)
+  design:
+    - Учитывать влияние на fmcp, fcov, flint и на все репозитории из feco/catalog/repos.list
+  tasks:
+    - Каждое требование покрывать unit-тестом tests/*_test.4th или интеграционным tests/*.sh
+
+operations:
+  apply:
+    guidance:
+      - Перед завершением прогонять fmix check; обновлять CHANGELOG.md
