@@ -29,6 +29,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `package.4th`: version **0.8.0**; pin `flint ~> 0.3`.
 - CI: triggers only on `main`; smoke `fmix check --no-flint --no-fcov`.
 - Default branch is **`main`** (migration complete).
+## [0.8.0] - 2026-06-08
+
+### Added
+- **`fmix check`** — quality gate with stages `pre-commit` (test + flint),
+  `pre-push` (+ fcov), and `all`; flags `--no-flint`, `--no-fcov`,
+  `--fail-under N`.
+- **`fmix hook install|uninstall`** — git hooks calling `fmix check`;
+  idempotent install; uninstall only removes hooks with `# vitasound-fmix-hook`.
+
+## [0.9.0] - 2026-10-22
+
+### Added
+- Recursive test scanning: `fmix test` now discovers `*_test.4th` files in
+  nested `tests/` subdirectories, not just the flat `tests/` root.
+- **`fmix test-scan-dir`** — new recursive directory scanner that finds test
+  files in nested directories, skipping `.`, `..`, and `fixtures` suffix.
+- **`join-rel`** helper: uses `fmix.fs-join` when path-u is non-empty,
+  `fmix.str-dup` when empty, for correct relative path construction.
+- **`skip-dot?`** and **`str-ends?`** utilities for path filtering.
+- Version bump to 0.9.0.
+
+### Changed
+- `fmix.test` now uses `test-scan-dir` instead of `test-read-dir` for
+  discovering test files.
+- `package.4th` version updated to 0.9.0.
+
+### Fixed
+- Proper handling of `.` and `..` entries in test directory scanning.
+- Proper skipping of `fixtures`-suffixed directories during test discovery.
+- `fmix.utils.join-rel` correct path construction for edge cases.
+
+## [Unreleased]
+
 
 ## [0.7.3] - 2026-06-08
 

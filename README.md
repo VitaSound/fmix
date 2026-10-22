@@ -47,7 +47,9 @@ Commands:
    new <name>                                - Create new package
    packages.get                              - Install dependencies
    test [--isolated|--shared] [<test_file>]  - Run all *_test.4th in
-                                               ./tests, or one given file.
+   ./tests, or one given file.
+   
+   Now discovers files in nested \`tests/\` subdirectories, not just the root.
                                                --isolated (default): each test
                                                in a fresh gforth process.
                                                --shared: single session for all.
