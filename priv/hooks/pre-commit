@@ -3,5 +3,8 @@
 set -euo pipefail
 root=$(git rev-parse --show-toplevel)
 cd "$root"
+if [ -x "$root/tools/pre-commit.sh" ]; then
+    exec "$root/tools/pre-commit.sh"
+fi
 : "${FMIX_HOME:=$HOME/fmix}"
 exec "$FMIX_HOME/bin/fmix" check --stage pre-commit
