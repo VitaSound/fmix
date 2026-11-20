@@ -18,13 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache GForth 0.7.9
-        id: cache-gforth
-        uses: actions/cache@v4
-        with:
-          path: ~/opt/gforth-0.7.9
-          key: gforth-0.7.9-ghcr-${{ runner.os }}-v1
-
+      # No actions/cache for /opt — prefix is hard-coded in the engine;
+      # GHCR pull (~20MB) is fast enough without a host-side cache.
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 

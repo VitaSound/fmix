@@ -238,11 +238,12 @@ commands that rely on the project directory.
 ## Install GForth 0.7.9 on a new Linux
 
 Preferred: pull the VitaSound image from GHCR and install the binary tree
-onto the host (needs Docker once; GForth then runs natively, not in snap):
+onto the host at **`/opt/gforth-0.7.9`** (needs Docker + sudo once; GForth
+then runs natively, not in snap). The engine hard-codes that prefix:
 
 ```bash
 bash scripts/install-gforth-from-ghcr.sh
-export PATH="$HOME/opt/gforth-0.7.9/bin:$PATH"
+export PATH="/opt/gforth-0.7.9/bin:$PATH"
 gforth --version   # expect 0.7.9
 ```
 
@@ -252,9 +253,10 @@ One-shot without the script:
 ```bash
 docker pull ghcr.io/vitasound/gforth:0.7.9
 cid=$(docker create ghcr.io/vitasound/gforth:0.7.9)
-docker cp "$cid:/opt/gforth-0.7.9" ~/opt/gforth-0.7.9
+sudo mkdir -p /opt && sudo rm -rf /opt/gforth-0.7.9
+sudo docker cp "$cid:/opt/gforth-0.7.9" /opt/gforth-0.7.9
 docker rm "$cid"
-export PATH="$HOME/opt/gforth-0.7.9/bin:$PATH"
+export PATH="/opt/gforth-0.7.9/bin:$PATH"
 ```
 
 Fallback without Docker: build from source with
