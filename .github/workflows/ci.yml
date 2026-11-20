@@ -47,8 +47,10 @@ jobs:
       - name: Definition coverage
         env:
           FCOV_HOME: ${{ github.workspace }}/fcov
-          PATH: ${{ github.workspace }}/fcov/bin:${{ env.PATH }}
         run: |
+          # Prepend in-shell: step-level PATH: ${{ env.PATH }} would drop
+          # /opt/gforth-0.7.9/bin added earlier via GITHUB_PATH.
+          export PATH="${FCOV_HOME}/bin:/opt/gforth-0.7.9/bin:${PATH}"
           fcov run env FMIX_CMD=test gforth fmix.4th
           pct=$(fcov report --format json | jq -r '.summary.coverage_pct')
           bash .github/scripts/update-cov-badge.sh . "$pct"
