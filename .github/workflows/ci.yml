@@ -19,10 +19,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/opt/gforth-0.7.9
-          key: gforth-0.7.9-${{ runner.os }}-v2
+          key: gforth-0.7.9-ghcr-${{ runner.os }}-v1
 
-      - name: Build and install GForth 0.7.9
-        run: bash .github/scripts/build-gforth-0.7.9.sh
+      - name: Install GForth 0.7.9 (GHCR, else source build)
+        run: bash .github/scripts/fetch-gforth-0.7.9.sh
 
       - name: Verify GForth version
         run: gforth --version 2>&1 | grep -F '0.7.9'

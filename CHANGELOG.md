@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- GHCR image `ghcr.io/vitasound/gforth:0.7.9` (`docker/gforth/`), publish workflow,
+  and `scripts/install-gforth-from-ghcr.sh` for new Linux hosts.
+- CI installs GForth from GHCR first, falls back to source build.
+
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 

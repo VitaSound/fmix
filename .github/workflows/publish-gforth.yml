@@ -1,0 +1,39 @@
+name: Publish GForth image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, infra/gforth-ghcr]
+    paths:
+      - 'docker/gforth/**'
+      - '.github/workflows/publish-gforth.yml'
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/vitasound/gforth
+  TAG: '0.7.9'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build image
+        run: docker build -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" docker/gforth
+
+      - name: Push image
+        run: |
+          docker push "${IMAGE}:${TAG}"
+          docker push "${IMAGE}:latest"
+
+      - name: Smoke version
+        run: |
+          docker run --rm "${IMAGE}:${TAG}" --version 2>&1 | tee /tmp/gforth-ver.txt
+          grep -F '0.7.9' /tmp/gforth-ver.txt
