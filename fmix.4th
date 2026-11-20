@@ -40,30 +40,35 @@ require fmix_hook.4th
     fmix.param-arg 2@ set-pkg-name fmix.new
 ;
 
+\ Look up sd in wid; if found, drop sd, execute the word, return true.
+\ Otherwise leave any1+sd and return false.
+: obey-wordlist? ( any1 sd wid -- any2 true | any1 sd false )
+    >r 2dup r> search-wordlist IF
+        nip nip execute true EXIT
+    THEN false
+;
+
+wordlist constant fmix.commands
+get-current fmix.commands set-current
+    synonym new          fmix.newproject
+    synonym packages.get fmix.packages.get
+    synonym test         fmix.test
+    synonym check        fmix.check
+    synonym hook         fmix.hook
+    synonym version      fmix.version
+    synonym help         fmix.help
+set-current
+
+: fmix.dispatch-command ( sd.command -- )
+    dup 0= IF 2drop fmix.help EXIT THEN
+    fmix.commands obey-wordlist? IF EXIT THEN
+    s" Unknown command: " type type cr
+    fmix.help
+;
+
 : fmix-dispatch ( -- )
     fmix.read_args
-    fmix.cmd-arg 2@ nip 0= IF
-        fmix.help
-    ELSE
-        fmix.cmd-arg 2@ s" new" compare 0= IF
-            fmix.newproject
-        ELSE fmix.cmd-arg 2@ s" packages.get" compare 0= IF
-            fmix.packages.get
-        ELSE fmix.cmd-arg 2@ s" test" compare 0= IF
-            fmix.test
-        ELSE fmix.cmd-arg 2@ s" check" compare 0= IF
-            fmix.check
-        ELSE fmix.cmd-arg 2@ s" hook" compare 0= IF
-            fmix.hook
-        ELSE fmix.cmd-arg 2@ s" version" compare 0= IF
-            fmix.version
-        ELSE fmix.cmd-arg 2@ s" help" compare 0= IF
-            fmix.help
-        ELSE
-            s" Unknown command: " type fmix.cmd-arg 2@ type cr
-            fmix.help
-        THEN THEN THEN THEN THEN THEN THEN
-    THEN
+    fmix.cmd-arg 2@ fmix.dispatch-command
     fmix.restore-terminal
     0 bye ;
 

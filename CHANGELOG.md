@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Dispatch CLI commands via a dedicated wordlist (`synonym` + `search-wordlist`)
+  instead of a long `compare` IF/ELSE chain in `fmix-dispatch`.
+
 ### TODO
 - Fix compatibility with GForth installed via snap (cwd and project path detection).
 
