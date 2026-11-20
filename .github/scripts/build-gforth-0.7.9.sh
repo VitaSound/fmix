@@ -51,7 +51,9 @@ if [[ ! -f configure ]]; then
   ./autogen.sh
 fi
 ./configure --prefix="${PREFIX}"
-make -j"$(nproc)"
+# Avoid flaky gforth-fast coretests under CI; toolchain only needs `gforth`.
+export TERM=dumb
+make -j"$(nproc)" gforth
 make install
 
 "${PREFIX}/bin/gforth" --version 2>&1 | grep -q '0.7.9'

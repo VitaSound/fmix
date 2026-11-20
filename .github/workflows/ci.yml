@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -19,10 +23,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/opt/gforth-0.7.9
-          key: gforth-0.7.9-${{ runner.os }}-v2
+          key: gforth-0.7.9-ghcr-${{ runner.os }}-v1
 
-      - name: Build and install GForth 0.7.9
-        run: bash .github/scripts/build-gforth-0.7.9.sh
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Install GForth 0.7.9 (GHCR, else source build)
+        run: bash .github/scripts/fetch-gforth-0.7.9.sh
 
       - name: Verify GForth version
         run: gforth --version 2>&1 | grep -F '0.7.9'
@@ -34,7 +41,7 @@ jobs:
         run: FMIX_CMD=test gforth fmix.4th
 
       - name: fmix check (test only)
-        run: fmix check --stage pre-commit --no-flint --no-fcov
+        run: bash bin/fmix check --stage pre-commit --no-flint --no-fcov
 
       - uses: actions/checkout@v4
         with:

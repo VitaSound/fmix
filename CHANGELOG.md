@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- GHCR image `ghcr.io/vitasound/gforth:0.7.9` (`docker/gforth/`), publish workflow,
+  and `scripts/install-gforth-from-ghcr.sh` for new Linux hosts.
+- CI installs GForth from GHCR first, falls back to source build.
+
 ### Changed
 - Dispatch CLI commands via a dedicated wordlist (`synonym` + `search-wordlist`)
   instead of a long `compare` IF/ELSE chain in `fmix-dispatch`.

@@ -233,8 +233,32 @@ GForth 0.7.9, linux, git, sed, cp.
 WARNING! Do not use GForth from snap. Snap runs GForth in a confined
 environment where the current working directory and filesystem paths may
 not match the shell session. That breaks `new`, `packages.get`, and other
-commands that rely on the project directory. Prefer `apt`, a local build
-under `~/opt/gforth-0.7.9`, or a tarball install.
+commands that rely on the project directory.
+
+## Install GForth 0.7.9 on a new Linux
+
+Preferred: pull the VitaSound image from GHCR and install the binary tree
+onto the host (needs Docker once; GForth then runs natively, not in snap):
+
+```bash
+bash scripts/install-gforth-from-ghcr.sh
+export PATH="$HOME/opt/gforth-0.7.9/bin:$PATH"
+gforth --version   # expect 0.7.9
+```
+
+Image: `ghcr.io/vitasound/gforth:0.7.9`.  
+One-shot without the script:
+
+```bash
+docker pull ghcr.io/vitasound/gforth:0.7.9
+cid=$(docker create ghcr.io/vitasound/gforth:0.7.9)
+docker cp "$cid:/opt/gforth-0.7.9" ~/opt/gforth-0.7.9
+docker rm "$cid"
+export PATH="$HOME/opt/gforth-0.7.9/bin:$PATH"
+```
+
+Fallback without Docker: build from source with
+`.github/scripts/build-gforth-0.7.9.sh` (same recipe CI used before GHCR).
 
 # Releasing
 
