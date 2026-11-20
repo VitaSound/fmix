@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: VitaSound/fcov
-          ref: '0.3.0'
+          ref: '0.3.3'
           path: fcov
 
       - name: Definition coverage
@@ -52,7 +52,7 @@ jobs:
           # Prepend in-shell: step-level PATH: ${{ env.PATH }} would drop
           # /opt/gforth-0.7.9/bin added earlier via GITHUB_PATH.
           export PATH="${FCOV_HOME}/bin:/opt/gforth-0.7.9/bin:${PATH}"
-          # fcov 0.3.0 checkout has no forth-packages/; fetch deps first.
+          # fcov 0.3.3 checkout has no forth-packages/; fetch deps first.
           (cd "${FCOV_HOME}" && bash "${FMIX_HOME}/bin/fmix" packages.get)
           fcov run env FMIX_CMD=test gforth fmix.4th
           pct=$(fcov report --format json | jq -r '.summary.coverage_pct')
