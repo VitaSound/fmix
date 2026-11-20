@@ -1,7 +1,7 @@
 # fmix
 [![License](https://img.shields.io/badge/License-COPL-red.svg)](https://raw.githubusercontent.com/VitaSound/fmix/refs/heads/main/LICENSE)
-[![Ver](https://img.shields.io/badge/Ver-0.9.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.9.0)
-[![Cov](https://img.shields.io/badge/Cov-75%25-green.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
+[![Ver](https://img.shields.io/badge/Ver-0.10.0-green.svg)](https://github.com/VitaSound/fmix/releases/tag/0.10.0)
+[![Cov](https://img.shields.io/badge/Cov-62%25-yellow.svg)](https://github.com/VitaSound/fmix/actions/workflows/ci.yml)
 
 [Русская версия](README.ru.md)
 
@@ -233,8 +233,34 @@ GForth 0.7.9, linux, git, sed, cp.
 WARNING! Do not use GForth from snap. Snap runs GForth in a confined
 environment where the current working directory and filesystem paths may
 not match the shell session. That breaks `new`, `packages.get`, and other
-commands that rely on the project directory. Prefer `apt`, a local build
-under `~/opt/gforth-0.7.9`, or a tarball install.
+commands that rely on the project directory.
+
+## Install GForth 0.7.9 on a new Linux
+
+Preferred: pull the VitaSound image from GHCR and install the binary tree
+onto the host at **`/opt/gforth-0.7.9`** (needs Docker + sudo once; GForth
+then runs natively, not in snap). The engine hard-codes that prefix:
+
+```bash
+bash scripts/install-gforth-from-ghcr.sh
+export PATH="/opt/gforth-0.7.9/bin:$PATH"
+gforth --version   # expect 0.7.9
+```
+
+Image: `ghcr.io/vitasound/gforth:0.7.9`.  
+One-shot without the script:
+
+```bash
+docker pull ghcr.io/vitasound/gforth:0.7.9
+cid=$(docker create ghcr.io/vitasound/gforth:0.7.9)
+sudo mkdir -p /opt && sudo rm -rf /opt/gforth-0.7.9
+sudo docker cp "$cid:/opt/gforth-0.7.9" /opt/gforth-0.7.9
+docker rm "$cid"
+export PATH="/opt/gforth-0.7.9/bin:$PATH"
+```
+
+Fallback without Docker: build from source with
+`.github/scripts/build-gforth-0.7.9.sh` (same recipe CI used before GHCR).
 
 # Releasing
 
