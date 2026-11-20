@@ -7,17 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### TODO
+- Fix compatibility with GForth installed via snap (cwd and project path detection).
+
+## [0.10.0] - 2026-11-21
+
 ### Added
 - GHCR image `ghcr.io/vitasound/gforth:0.7.9` (`docker/gforth/`), publish workflow,
   and `scripts/install-gforth-from-ghcr.sh` for new Linux hosts.
-- CI installs GForth from GHCR first, falls back to source build.
+- CI installs GForth from GHCR first (prefix `/opt/gforth-0.7.9`), falls back to
+  source build; fetches fcov `forth-packages/` before the coverage step.
 
 ### Changed
 - Dispatch CLI commands via a dedicated wordlist (`synonym` + `search-wordlist`)
   instead of a long `compare` IF/ELSE chain in `fmix-dispatch`.
-
-### TODO
-- Fix compatibility with GForth installed via snap (cwd and project path detection).
+- `package.4th` version **0.10.0**.
 
 ## [0.8.0] - 2026-06-08
 
